@@ -1,7 +1,8 @@
-class Vector2 {
-    constructor(x, y) {
+class Vector2D {
+    constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
+        this.z = 1;
     }
 
     Print() {
@@ -38,6 +39,10 @@ class Vector2 {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
+    SquareLength() {
+        return (this.x * this.x) + (this.y * this.y);
+    }
+
     SetLength(length) {
         let angle = this.getAngle();
 
@@ -46,13 +51,13 @@ class Vector2 {
     }
 
     DistanceTo(v) {
-        return new Vector2(v.x - this.x, v.y - this.y).Length();
+        return new Vector2D(v.x - this.x, v.y - this.y).Length();
     }
 
     Normalized() {
         let length = this.Length();
 
-        return new Vector2(this.x / length, this.y / length);
+        return new Vector2D(this.x / length, this.y / length);
     }
 
     NormalizeSelf() {
@@ -63,7 +68,7 @@ class Vector2 {
     }
 
     VectorTo(v) {
-        return new Vector2(v.x - this.x, v.y - this.y);
+        return new Vector2D(v.x - this.x, v.y - this.y);
     }
 
     AngleTo(v) {
@@ -73,10 +78,10 @@ class Vector2 {
 
 let Vector = {
     Add: function(v1, v2) {
-        return new Vector2(v1.x + v2.x, v1.y + v2.y);
+        return new Vector2D(v1.x + v2.x, v1.y + v2.y);
     },
 
     Subtract: function(v1, v2) {
-        return new Vector2(v1.x - v2.x, v1.y - v2.y);
+        return new Vector2D(v1.x - v2.x, v1.y - v2.y);
     }
 }
