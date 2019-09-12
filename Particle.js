@@ -2,39 +2,56 @@ class Particle {
     constructor(position) {
         this.transform  = new Matrix2D();
         this.transform.Translate(position);
-
+        
         this.hasGravity = true;
-        this.velocity   = new Vector2D(0, 0);
+        this.velocity   = new Vector2D();
         this.mass       = 1;
+
+        this.n02 = 0;
+        this.n10 = 0;
+
+        this.lastPosition = new Vector2D();
+        this.isInterpolated = true;
+    }
+ 
+    Draw() {
+        if (this.isInterpolated) {
+            let interporlate = Engine.Lag / Engine.FixedDeltaTime;
+        
+            this.lastPosition.x = this.lastPosition.x + (this.transform.n02 - this.lastPosition.x) * interporlate;
+            this.lastPosition.y = this.lastPosition.y + (this.transform.n12 - this.lastPosition.y) * interporlate;
+
+            this.DrawBodyAt(this.lastPosition.x, this.lastPosition.y);
+            this.DrawAxesAt(this.lastPosition.x, this.lastPosition.y);
+        }
+        else {
+            this.DrawBodyAt(this.transform.n02, this.transform.n12);
+            this.DrawAxesAt(this.transform.n02, this.transform.n12);
+        } 
     }
 
-    Draw() {
+    DrawBodyAt(x, y) {
         Context.save();
-
-        this.DrawAxes();
-
         Context.beginPath();
         Context.lineWidth = 0.1;
         Context.strokeStyle = 'gray';
-        Context.arc(this.transform.n02, this.transform.n12, 0.4, 0, 2 * Math.PI, false);
+        Context.arc(x, y, 0.4, 0, 2 * Math.PI, false);
         Context.stroke();
         Context.closePath();
-
         Context.restore();
     }
 
-    DrawAxes() {
-        Context.save();
-
+    DrawAxesAt(x, y) {
         let displacement = new Vector2D();
 
         // x axis
+        Context.save();
         Context.beginPath();
         Context.lineWidth = 0.1;
         Context.strokeStyle = "#009b4e"; // dark cyan
-        Context.moveTo(this.transform.n02, this.transform.n12);
-        displacement.x = this.transform.n02 + this.Right().x * 1.5;
-        displacement.y = this.transform.n12 + this.Right().y * 1.5;
+        Context.moveTo(x, y);
+        displacement.x = x + this.Right().x * 1.5;
+        displacement.y = y + this.Right().y * 1.5;
         Context.lineTo(displacement.x, displacement.y);
         Context.stroke();
         Context.closePath();
@@ -43,13 +60,12 @@ class Particle {
         Context.beginPath();
         Context.lineWidth = 0.1;
         Context.strokeStyle = "#ff6767"; // very light red
-        Context.moveTo(this.transform.n02, this.transform.n12);
-        displacement.x = this.transform.n02 + this.Up().x * 1.5;
-        displacement.y = this.transform.n12 + this.Up().y * 1.5;
+        Context.moveTo(x, y);
+        displacement.x = x + this.Up().x * 1.5;
+        displacement.y = y + this.Up().y * 1.5;
         Context.lineTo(displacement.x, displacement.y);
         Context.stroke();
         Context.closePath();
-
         Context.restore();
     }
 
@@ -62,18 +78,17 @@ class Particle {
     Rotate(degree) { this.transform.Rotate(degree); }
 
     Move() {
+        let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);
+
+        this.lastPosition.x = this.transform.n02;
+        this.lastPosition.y = this.transform.n12;
+
         if (this.hasGravity) {
-            this.velocity.Add(new Vector2D(0, -9.81 / 60));
-
-            // let localVelocity = new Vector2D(this.velocity.x, this.velocity.y);
-
-            // localVelocity.x = this.velocity.x * this.transform.n00 + this.velocity.y * this.transform.n01;
-            // localVelocity.y = this.velocity.x * this.transform.n10 + this.velocity.y * this.transform.n11;
-
-            this.transform.Translate(this.velocity);
+            this.velocity.y += -9.81 * Engine.SecondsPerFixedUpdate;
+            this.transform.Translate(scaledVelocity);
         }
-        else {
-            this.transform.Translate(this.velocity);
+        else {  
+            this.transform.Translate(scaledVelocity);
         }
     }
 

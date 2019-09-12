@@ -44,7 +44,7 @@ class Vector2D {
     }
 
     SetLength(length) {
-        let angle = this.getAngle();
+        let angle = this.Angle();
 
         this.x = Math.cos(angle) * length;
         this.y = Math.sin(angle) * length;
@@ -83,5 +83,13 @@ let Vector = {
 
     Subtract: function(v1, v2) {
         return new Vector2D(v1.x - v2.x, v1.y - v2.y);
+    },
+
+    Multiply: function(v, factor) {
+        return new Vector2D(v.x * factor, v.y * factor);
+    },
+
+    Scale: function(v, factor) {
+        return new Vector2D(v.x * factor, v.y * factor);
     }
 }

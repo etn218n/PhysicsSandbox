@@ -5,50 +5,70 @@ let Engine = {
     WindowWidth: 0,
     WindowHeight: 0,
     ClearWindow: true,
+
     FrameCount: 0,
     FrameCountInOneSecond: 0,
-    DeltaTime: 0,
+    
     FrameRate: 0,
+    FixedFrameRate: 45,
+
     AccumulatedTime: 0,
-    LastFrameTimeStamp: 0,
-    CapFrameRate: 50,
+    AccumulatedTimeInOneSecond: 0,
+
+    Lag: 0,
+    DeltaTime: 0,
+    FixedDeltaTime: 0,
+    LastFrameTimeStamp: 0, 
+    SecondsPerFixedUpdate: 0,
 
     Awake:  function() {},
     Update: function() {},
+    FixedUpdate: function() {},
 
     Init: function() {
         Context.translate(this.WindowWidth / 2, this.WindowHeight / 2);
         Context.scale(PixelsPerUnit, -PixelsPerUnit);
+
+        this.FixedDeltaTime = 1000 / this.FixedFrameRate;
+        this.SecondsPerFixedUpdate = this.FixedDeltaTime / 1000;
 
         this.DrawFPS();
         this.Awake();
     },
 
     GameLoop: function() {
-        this.Clear();
-        this.DrawAxes();
-        this.Update();  
-
         let CurrentFrameTimeStamp = performance.now();
-
         this.DeltaTime = CurrentFrameTimeStamp - this.LastFrameTimeStamp;
+        this.LastFrameTimeStamp = CurrentFrameTimeStamp;
 
-        this.AccumulatedTime += this.DeltaTime;
+        this.AccumulatedTimeInOneSecond += this.DeltaTime;
 
-        this.FrameCount   += 1;
+        this.FrameCount += 1;
         this.FrameCountInOneSecond += 1;
 
-        if (this.AccumulatedTime >= 1000) {
-            this.AccumulatedTime -= 1000;
+        if (this.AccumulatedTimeInOneSecond >= 1000) {
+            this.AccumulatedTimeInOneSecond -= 1000;
             this.FrameRate = this.FrameCountInOneSecond;
             this.FrameCountInOneSecond = 0;
         }
 
-        this.LastFrameTimeStamp = CurrentFrameTimeStamp;
+        this.Lag += this.DeltaTime;
 
-        this.DrawFPS();
+        if (this.Lag >= this.FixedDeltaTime) {
+            this.FixedUpdate();
+            this.Lag -= this.FixedDeltaTime;
+        }
+
+        this.Render();
 
         requestAnimationFrame(() => this.GameLoop()); 
+    },
+
+    Render: function() {
+        this.Clear();
+        this.DrawAxes();
+        this.Update();  
+        this.DrawFPS();
     },
 
     DrawFPS: function() {
@@ -125,5 +145,5 @@ Number.prototype.between = function(a, b, inclusive = true) {
     let min = Math.min.apply(Math, [a, b]),
         max = Math.max.apply(Math, [a, b]);
 
-    return inclusive ? this >= min && this <= max : this > min && this < max;
+    return inclusive ? (this >= min && this <= max) : (this > min && this < max);
 };
