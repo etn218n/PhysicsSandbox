@@ -27,24 +27,40 @@ Engine.Update = function() {
     particles.forEach(p => {
         p.Draw();
     })
+
+    //Ramp.Plot();
 };
 
 let maxHeight = 0;
+let done = false;
 
 Engine.FixedUpdate = function() {
 
-    Timer(3000);
+    //Timer(3000);
 
-    if (particles[0].Position().y > maxHeight)
-        maxHeight = particles[0].Position().y;
+    // if (particles[0].Position().y > maxHeight)
+    //    maxHeight = particles[0].Position().y;
 
-    particles.forEach(p => {
-        p.Move();
-        p.Rotate(3);
-    })
+    // particles.forEach(p => {
+    //     p.Move();
+    //     p.Rotate(3);
+    // });
+
+    if (!done) {
+        let Ek = 0.5  * particles[0].mass * particles[0].velocity.SquareLength();
+        let Ep = 9.81 * particles[0].mass * particles[0].Position().y;
+
+        console.log(Ek + Ep);
+
+        particles.forEach(p => {
+            p.Move();
+            p.Rotate(3);
+        });
+
+        if (particles[0].Position().y < 0)
+           done = true;
+    }
 };
-
-let done = false;
 
 async function Timer(ms) {
     await Sleep(ms);
