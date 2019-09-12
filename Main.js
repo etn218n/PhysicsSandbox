@@ -6,11 +6,12 @@ let Engine = {
     WindowHeight: 0,
     ClearWindow: true,
     FrameCount: 0,
-    FrameCounterInOneSecond: 0,
+    FrameCountInOneSecond: 0,
     DeltaTime: 0,
     FrameRate: 0,
     AccumulatedTime: 0,
     LastFrameTimeStamp: 0,
+    CapFrameRate: 50,
 
     Awake:  function() {},
     Update: function() {},
@@ -26,7 +27,7 @@ let Engine = {
     GameLoop: function() {
         this.Clear();
         this.DrawAxes();
-        this.Update();
+        this.Update();  
 
         let CurrentFrameTimeStamp = performance.now();
 
@@ -35,16 +36,17 @@ let Engine = {
         this.AccumulatedTime += this.DeltaTime;
 
         this.FrameCount   += 1;
-        this.FrameCounterInOneSecond += 1;
+        this.FrameCountInOneSecond += 1;
 
         if (this.AccumulatedTime >= 1000) {
             this.AccumulatedTime -= 1000;
-            this.FrameRate = this.FrameCounterInOneSecond;
-            this.FrameCounterInOneSecond = 0;
-            this.DrawFPS();
+            this.FrameRate = this.FrameCountInOneSecond;
+            this.FrameCountInOneSecond = 0;
         }
 
         this.LastFrameTimeStamp = CurrentFrameTimeStamp;
+
+        this.DrawFPS();
 
         requestAnimationFrame(() => this.GameLoop()); 
     },
@@ -54,7 +56,6 @@ let Engine = {
         Context.font = "20px Comic Sans MS";
         Context.scale(1 / PixelsPerUnit, - 1 / PixelsPerUnit);
         Context.translate(-this.WindowWidth / 2 + 30, -this.WindowHeight / 2 + 30);
-        Context.clearRect(-30, -30, 150, 50);
         Context.fillText("FPS: " + this.FrameRate, 0, 0);
         Context.restore();
     },
@@ -67,10 +68,12 @@ let Engine = {
     DrawAxes: function() {
         Context.save();
 
+        let dotSize = 0.15;
+
         for (let x = 0; x <= this.WindowWidth / 2; x += 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
-            Context.arc(x, 0, 0.1, 0, 2 * Math.PI, false);
+            Context.arc(x, 0, dotSize, 0, 2 * Math.PI, false);
             Context.fill();
             Context.closePath();
         }
@@ -78,7 +81,7 @@ let Engine = {
         for (let x = 0; x >= -this.WindowWidth / 2; x -= 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
-            Context.arc(x, 0, 0.1, 0, 2 * Math.PI, false);
+            Context.arc(x, 0, dotSize, 0, 2 * Math.PI, false);
             Context.fill();
             Context.closePath();
         }
@@ -86,7 +89,7 @@ let Engine = {
         for (let y = 0 ; y <= this.WindowHeight / 2; y += 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
-            Context.arc(0, y, 0.1, 0, 2 * Math.PI, false);
+            Context.arc(0, y, dotSize, 0, 2 * Math.PI, false);
             Context.fill();
             Context.closePath();
         }
@@ -94,7 +97,7 @@ let Engine = {
         for (let y = 0 ; y >= -this.WindowHeight / 2; y -= 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
-            Context.arc(0, y, 0.1, 0, 2 * Math.PI, false);
+            Context.arc(0, y, dotSize, 0, 2 * Math.PI, false);
             Context.fill();
             Context.closePath();
         }

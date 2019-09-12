@@ -11,11 +11,27 @@ class Particle {
     Draw() {
         Context.save();
 
-        let displacement = new Vector2D();
+        this.DrawAxes();
 
         Context.beginPath();
         Context.lineWidth = 0.1;
-        Context.strokeStyle = 'green';
+        Context.strokeStyle = 'gray';
+        Context.arc(this.transform.n02, this.transform.n12, 0.4, 0, 2 * Math.PI, false);
+        Context.stroke();
+        Context.closePath();
+
+        Context.restore();
+    }
+
+    DrawAxes() {
+        Context.save();
+
+        let displacement = new Vector2D();
+
+        // x axis
+        Context.beginPath();
+        Context.lineWidth = 0.1;
+        Context.strokeStyle = "#009b4e"; // dark cyan
         Context.moveTo(this.transform.n02, this.transform.n12);
         displacement.x = this.transform.n02 + this.Right().x * 1.5;
         displacement.y = this.transform.n12 + this.Right().y * 1.5;
@@ -23,19 +39,14 @@ class Particle {
         Context.stroke();
         Context.closePath();
 
+        // y axis
         Context.beginPath();
         Context.lineWidth = 0.1;
-        Context.strokeStyle = 'red';
+        Context.strokeStyle = "#ff6767"; // very light red
         Context.moveTo(this.transform.n02, this.transform.n12);
         displacement.x = this.transform.n02 + this.Up().x * 1.5;
         displacement.y = this.transform.n12 + this.Up().y * 1.5;
         Context.lineTo(displacement.x, displacement.y);
-        Context.stroke();
-        Context.closePath();
-
-        Context.beginPath();
-        Context.strokeStyle = 'black';
-        Context.arc(this.transform.n02, this.transform.n12, 0.4, 0, 2 * Math.PI, false);
         Context.stroke();
         Context.closePath();
 
