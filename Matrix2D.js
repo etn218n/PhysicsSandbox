@@ -12,6 +12,7 @@ class Matrix2D {
 
     Up() { return new Vector2D(this.n01, this.n11); }
     Right() { return new Vector2D(this.n00, this.n10); }
+    Angle() {return this.angle; }
     Position() { return new Vector2D(this.n02, this.n12); }
 
     Translate(displacement) {

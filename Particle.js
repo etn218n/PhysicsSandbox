@@ -75,7 +75,10 @@ class Particle {
     Up() { return this.transform.Up(); }
     Right() { return this.transform.Right(); }
     Position() { return this.transform.Position(); }
-    Rotate(degree) { this.transform.Rotate(degree); }
+
+    Rotate(degree) { 
+        this.transform.Rotate(degree * Engine.SecondsPerFixedUpdate); 
+    }
 
     Move() {
         let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);

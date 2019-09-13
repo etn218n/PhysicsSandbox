@@ -6,6 +6,9 @@ let Engine = {
     WindowHeight: 0,
     ClearWindow: true,
 
+    MouseX: 0,
+    MouseY: 0,
+
     FrameCount: 0,
     FrameCountInOneSecond: 0,
     
@@ -25,9 +28,16 @@ let Engine = {
     Update: function() {},
     FixedUpdate: function() {},
 
+    OnMouseMove(e) {
+        this.MouseX =  (e.clientX - this.WindowWidth  / 2) / PixelsPerUnit;
+        this.MouseY = -(e.clientY - this.WindowHeight / 2) / PixelsPerUnit;
+    },
+
     Init: function() {
         Context.translate(this.WindowWidth / 2, this.WindowHeight / 2);
         Context.scale(PixelsPerUnit, -PixelsPerUnit);
+
+        document.body.addEventListener("mousemove", this.OnMouseMove.bind(this));
 
         this.FixedDeltaTime = 1000 / this.FixedFrameRate;
         this.SecondsPerFixedUpdate = this.FixedDeltaTime / 1000;

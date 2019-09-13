@@ -26,6 +26,9 @@ class Plotter {
     }
 
     Plot() {
+        if (this.points.length == 0)
+            return;
+
         Context.beginPath();
         Context.lineWidth = 0.1;
 
@@ -40,6 +43,9 @@ class Plotter {
     }
 
     PlotTo(index) {
+        if (this.points.length == 0)
+            return;
+            
         Context.beginPath();
         Context.lineWidth = 0.1;
 
