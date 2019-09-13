@@ -1,8 +1,12 @@
 let tri;
 let particles;
+let rampPlotter;
 
 Engine.Awake = function() {
     Engine.ClearWindow = true;
+
+    rampPlotter = new Plotter();
+    rampPlotter.GeneratePoints([0, 40], (x) => Ramp.f(x), 0.3);
 
     tri = new Triangle(new Vector2D(-1, -1), new Vector2D(-1, 1), new Vector2D(1, 0));
 
@@ -18,25 +22,25 @@ Engine.Awake = function() {
     launchVector.Print();
 
     particles[0].velocity = launchVector;
-    particles[1].velocity = new Vector2D(1, 0);
+    particles[1].velocity = new Vector2D(5, 0);
     particles[2].velocity = new Vector2D(-1, 1);
     particles[0].hasGravity = true;
 };
 
 Engine.Update = function() {
-    particles.forEach(p => {
-        p.Draw();
-    })
+    // particles.forEach(p => {
+    //     p.Draw();
+    // })
 
-    //Ramp.Plot();
+    rampPlotter.Animate(true);
 };
 
 let maxHeight = 0;
 let done = false;
 
 Engine.FixedUpdate = function() {
-
-    //Timer(3000);
+    
+    // Timer(3000);
 
     // if (particles[0].Position().y > maxHeight)
     //    maxHeight = particles[0].Position().y;
@@ -46,20 +50,20 @@ Engine.FixedUpdate = function() {
     //     p.Rotate(3);
     // });
 
-    if (!done) {
-        let Ek = 0.5  * particles[0].mass * particles[0].velocity.SquareLength();
-        let Ep = 9.81 * particles[0].mass * particles[0].Position().y;
+    // if (!done) {
+    //     let Ek = 0.5  * particles[0].mass * particles[0].velocity.SquareLength();
+    //     let Ep = 9.81 * particles[0].mass * particles[0].Position().y;
 
-        console.log(Ek + Ep);
+    //     console.log(Ek + Ep);
 
-        particles.forEach(p => {
-            p.Move();
-            p.Rotate(3);
-        });
+    //     particles.forEach(p => {
+    //         p.Move();
+    //         p.Rotate(3);
+    //     });
 
-        if (particles[0].Position().y < 0)
-           done = true;
-    }
+    //     if (particles[0].Position().y < 0)
+    //        done = true;
+    // }
 };
 
 async function Timer(ms) {
