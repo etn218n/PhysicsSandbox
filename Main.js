@@ -1,6 +1,5 @@
 var Context = null;
 var PixelsPerUnit = 15;
-var originTimeStamp = 0;
 
 let Engine = {
     WindowWidth: 0,
@@ -25,12 +24,10 @@ let Engine = {
     LastFrameTimeStamp: 0, 
     SecondsPerFixedUpdate: 0,
 
-    Awake:  function() {},
-
+    OnAwake:  [],
     OnRender: [],
     OnUpdate: [],
     OnFixedUpdate: [],
-    OneTimeDone: false,
 
     OnMouseMove(e) {
         this.MouseX =  (e.clientX - this.WindowWidth  / 2) / PixelsPerUnit;
@@ -47,7 +44,8 @@ let Engine = {
         this.SecondsPerFixedUpdate = this.FixedDeltaTime / 1000;
 
         this.DrawFPS();
-        this.Awake();
+
+        this.OnAwake.forEach(awaker => awaker());
         
         this.ElapsedAppTime = performance.now();
     },
@@ -76,13 +74,6 @@ let Engine = {
     },
 
     CountFPS: function() {
-        if (!this.OneTimeDone) {
-            this.OneTimeDone = true;
-            //console.log(CurrentFrameTimeStamp);
-            this.ElapsedAppTime = performance.now();
-            Timer(2000, () => console.log(particles[0].Position().x))
-        }
-
         let CurrentFrameTimeStamp = performance.now() - this.ElapsedAppTime;
 
         this.DeltaTime = CurrentFrameTimeStamp - this.LastFrameTimeStamp;
@@ -164,8 +155,7 @@ window.onload = function() {
         width   = canvas.width  = window.innerWidth,
         height  = canvas.height = window.innerHeight;
 
-    Context = context;    
-    this.originTimeStamp = performance.now();
+    Context = context;
 
     Engine.WindowWidth  = width;
     Engine.WindowHeight = height;
