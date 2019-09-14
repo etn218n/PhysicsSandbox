@@ -1,17 +1,36 @@
 class Particle {
-    constructor(position) {
-        this.transform  = new Matrix2D();
+    constructor(position = new Vector2D()) {
+        this.transform = new Matrix2D();
         this.transform.Translate(position);
         
+        this.mass = 1;
         this.hasGravity = true;
-        this.velocity   = new Vector2D();
-        this.mass       = 1;
+
+        this.velocity = new Vector2D();
+        this.angularVelocity = 0;
 
         this.n02 = 0;
         this.n10 = 0;
 
         this.lastPosition = new Vector2D();
         this.isInterpolated = true;
+
+        this.renderID = Engine.OnRender.length;
+        Engine.OnRender.push(this.Draw.bind(this));
+
+        this.physicID = Engine.OnFixedUpdate.length;
+        Engine.OnFixedUpdate.push(this.Simulate.bind(this));
+    }
+
+    Disable() {
+        if (this.renderID == -1 || this.physicID == -1)
+            return;
+
+        Engine.OnRender.splice(this.renderID, 1);
+        Engine.OnFixedUpdate.splice(this.physicID, 1);
+
+        this.renderID = -1;
+        this.physicID = -1;
     }
  
     Draw() {
@@ -75,12 +94,9 @@ class Particle {
     Up() { return this.transform.Up(); }
     Right() { return this.transform.Right(); }
     Position() { return this.transform.Position(); }
+    Rotate(angularVelocity) { this.transform.Rotate(angularVelocity * Engine.SecondsPerFixedUpdate); }
 
-    Rotate(degree) { 
-        this.transform.Rotate(degree * Engine.SecondsPerFixedUpdate); 
-    }
-
-    Move() {
+    Simulate() {
         let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);
 
         this.lastPosition.x = this.transform.n02;
@@ -93,15 +109,8 @@ class Particle {
         else {  
             this.transform.Translate(scaledVelocity);
         }
-    }
 
-    MoveWith(velocity) {
-        this.velocity = velocity;
-        this.Move();
-    }
-
-    AccelerateWith(acceleration) {
-        this.velocity.Add(acceleration);
-        this.Move();
+        if (this.angularVelocity != 0)
+            this.Rotate(this.angularVelocity);
     }
 }

@@ -1,5 +1,6 @@
 var Context = null;
 var PixelsPerUnit = 15;
+var originTimeStamp = 0;
 
 let Engine = {
     WindowWidth: 0,
@@ -25,8 +26,11 @@ let Engine = {
     SecondsPerFixedUpdate: 0,
 
     Awake:  function() {},
-    Update: function() {},
-    FixedUpdate: function() {},
+
+    OnRender: [],
+    OnUpdate: [],
+    OnFixedUpdate: [],
+    OneTimeDone: false,
 
     OnMouseMove(e) {
         this.MouseX =  (e.clientX - this.WindowWidth  / 2) / PixelsPerUnit;
@@ -44,11 +48,45 @@ let Engine = {
 
         this.DrawFPS();
         this.Awake();
+        
+        this.ElapsedAppTime = performance.now();
     },
 
     GameLoop: function() {
-        let CurrentFrameTimeStamp = performance.now();
+        this.CountFPS();
+
+        this.OnUpdate.forEach(updater => updater());
+
+        if (this.Lag >= this.FixedDeltaTime) {
+            this.OnFixedUpdate.forEach(fixedUpdater => fixedUpdater());
+            this.Lag -= this.FixedDeltaTime;
+        }
+
+        this.Render();
+
+        requestAnimationFrame(() => this.GameLoop()); 
+    },
+
+    Render: function() {
+        this.Clear();
+        this.DrawAxes();
+        this.DrawFPS();
+
+        this.OnRender.forEach(renderer => renderer());
+    },
+
+    CountFPS: function() {
+        if (!this.OneTimeDone) {
+            this.OneTimeDone = true;
+            //console.log(CurrentFrameTimeStamp);
+            this.ElapsedAppTime = performance.now();
+            Timer(2000, () => console.log(particles[0].Position().x))
+        }
+
+        let CurrentFrameTimeStamp = performance.now() - this.ElapsedAppTime;
+
         this.DeltaTime = CurrentFrameTimeStamp - this.LastFrameTimeStamp;
+
         this.LastFrameTimeStamp = CurrentFrameTimeStamp;
 
         this.AccumulatedTimeInOneSecond += this.DeltaTime;
@@ -63,22 +101,6 @@ let Engine = {
         }
 
         this.Lag += this.DeltaTime;
-
-        if (this.Lag >= this.FixedDeltaTime) {
-            this.FixedUpdate();
-            this.Lag -= this.FixedDeltaTime;
-        }
-
-        this.Render();
-
-        requestAnimationFrame(() => this.GameLoop()); 
-    },
-
-    Render: function() {
-        this.Clear();
-        this.DrawAxes();
-        this.Update();  
-        this.DrawFPS();
     },
 
     DrawFPS: function() {
@@ -143,6 +165,7 @@ window.onload = function() {
         height  = canvas.height = window.innerHeight;
 
     Context = context;    
+    this.originTimeStamp = performance.now();
 
     Engine.WindowWidth  = width;
     Engine.WindowHeight = height;
