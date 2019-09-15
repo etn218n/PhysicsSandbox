@@ -29,6 +29,8 @@ let Engine = {
     OnUpdate: [],
     OnFixedUpdate: [],
 
+    CoroutineList: [],
+
     OnMouseMove(e) {
         this.MouseX =  (e.clientX - this.WindowWidth  / 2) / PixelsPerUnit;
         this.MouseY = -(e.clientY - this.WindowHeight / 2) / PixelsPerUnit;
@@ -55,6 +57,8 @@ let Engine = {
 
         this.OnUpdate.forEach(updater => updater());
 
+        this.UpdateCoroutine();
+
         if (this.Lag >= this.FixedDeltaTime) {
             this.OnFixedUpdate.forEach(fixedUpdater => fixedUpdater());
             this.Lag -= this.FixedDeltaTime;
@@ -63,6 +67,15 @@ let Engine = {
         this.Render();
 
         requestAnimationFrame(() => this.GameLoop()); 
+    },
+
+    UpdateCoroutine: function() {
+        this.CoroutineList.forEach(coroutine => {
+            let result = coroutine.generator.next();
+            
+            if (result.done)
+                this.CoroutineList.remove(coroutine);
+        });
     },
 
     Render: function() {
@@ -170,3 +183,12 @@ Number.prototype.between = function(a, b, inclusive = true) {
 
     return inclusive ? (this >= min && this <= max) : (this > min && this < max);
 };
+
+Array.prototype.remove = function(wantedItem) {
+    for (let i = 0; i < this.length; i++) {
+        if (this[i] == wantedItem) {
+            this.splice(i, 1);
+            return;
+        }
+    }
+}

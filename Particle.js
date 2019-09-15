@@ -15,22 +15,16 @@ class Particle {
         this.lastPosition = new Vector2D();
         this.isInterpolated = true;
 
-        this.renderID = Engine.OnRender.length;
-        Engine.OnRender.push(this.Draw.bind(this));
+        this.Renderer = this.Draw.bind(this)
+        this.Simulator = this.Simulate.bind(this);
 
-        this.physicID = Engine.OnFixedUpdate.length;
-        Engine.OnFixedUpdate.push(this.Simulate.bind(this));
+        Engine.OnRender.push(this.Renderer);
+        Engine.OnFixedUpdate.push(this.Simulator);
     }
 
     Disable() {
-        if (this.renderID == -1 || this.physicID == -1)
-            return;
-
-        Engine.OnRender.splice(this.renderID, 1);
-        Engine.OnFixedUpdate.splice(this.physicID, 1);
-
-        this.renderID = -1;
-        this.physicID = -1;
+        Engine.OnRender.remove(this.Renderer);
+        Engine.OnFixedUpdate.remove(this.Simulator);
     }
  
     Draw() {
