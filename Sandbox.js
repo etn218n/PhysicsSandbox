@@ -11,6 +11,16 @@ Engine.OnAwake.push(() => {
             Engine.OnRender = [];
             Engine.OnFixedUpdate = [];
             Exercise2();
+
+            case "3":
+            Engine.OnRender = [];
+            Engine.OnFixedUpdate = [];
+            Exercise3();
+
+            case "4":
+            Engine.OnRender = [];
+            Engine.OnFixedUpdate = [];
+            Exercise4();
         }
     });
 });

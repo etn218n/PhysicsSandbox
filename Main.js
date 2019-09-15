@@ -1,5 +1,5 @@
 var Context = null;
-var PixelsPerUnit = 3;
+var PixelsPerUnit = 20;
 
 let Engine = {
     WindowWidth: 0,
