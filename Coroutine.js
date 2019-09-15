@@ -1,6 +1,7 @@
 class Coroutine {
-    constructor(generator) {
+    constructor(generator, arg = null) {
         this.generator = generator();
+        this.arg = arg;
         Engine.CoroutineList.push(this);
     }
 }

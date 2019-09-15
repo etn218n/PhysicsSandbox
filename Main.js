@@ -1,5 +1,5 @@
 var Context = null;
-var PixelsPerUnit = 15;
+var PixelsPerUnit = 3;
 
 let Engine = {
     WindowWidth: 0,
@@ -71,7 +71,7 @@ let Engine = {
 
     UpdateCoroutine: function() {
         this.CoroutineList.forEach(coroutine => {
-            let result = coroutine.generator.next();
+            let result = coroutine.generator.next(coroutine.arg);
             
             if (result.done)
                 this.CoroutineList.remove(coroutine);

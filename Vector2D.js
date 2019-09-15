@@ -29,10 +29,12 @@ class Vector2D {
     }
 
     SetAngle(angle) {
+        let radian = angle * Math.PI / 180;
+
         let length = this.Length();
         
-        this.x = Math.cos(angle) * length;
-        this.y = Math.sin(angle) * length;
+        this.x = Math.cos(radian) * length;
+        this.y = Math.sin(radian) * length;
     }
 
     Length() {

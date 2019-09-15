@@ -1,34 +1,18 @@
-let tri;
-let p;
-let rampPlotter;
-
 Engine.OnAwake.push(() => {
-    Engine.ClearWindow = true;
-
-    let launchVelocity = new Vector2D(1, 1);
-    launchVelocity.SetAngle(45);
-    launchVelocity.SetLength(10);
-
-    p = new Particle();
-    p.velocity = launchVelocity;
-
-    let co = new Coroutine(function*() {
-        let dt = 0;
-
-        while (p.Position().y >= 0) {
-            dt += Engine.DeltaTime;
-            yield;
+    
+    document.body.addEventListener("keypress", function(event) {
+        switch(event.key) {
+            case "1": 
+            Engine.OnRender = [];
+            Engine.OnFixedUpdate = [];
+            Exercise1(); break;
+        
+            case "2":
+            Engine.OnRender = [];
+            Engine.OnFixedUpdate = [];
+            Exercise2();
         }
-
-        p.Disable();
-        console.log(p.Position().y);
     });
-});
-
-Engine.OnRender.push(() => {
-});
-
-Engine.OnUpdate.push(() => {
 });
 
 async function Timer(ms, task) {
