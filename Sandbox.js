@@ -5,12 +5,26 @@ Engine.OnAwake.push(() => {
             case "1": 
             Engine.OnRender = [];
             Engine.OnFixedUpdate = [];
+            Engine.CoroutineList = [];
             Exercise1(); break;
         
             case "2":
             Engine.OnRender = [];
             Engine.OnFixedUpdate = [];
-            Exercise2();
+            Engine.CoroutineList = [];
+            Exercise2(); break;
+
+            case "3":
+            Engine.OnRender = [];
+            Engine.OnFixedUpdate = [];
+            Engine.CoroutineList = [];
+            Exercise3(); break;
+
+            case "4": 
+            Engine.OnRender = [];
+            Engine.OnFixedUpdate = [];
+            Engine.CoroutineList = [];
+            Exercise4(); break;
         }
     });
 });
