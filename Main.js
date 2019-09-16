@@ -1,5 +1,5 @@
 var Context = null;
-var PixelsPerUnit = 20;
+var PixelsPerUnit = 25;
 
 let Engine = {
     WindowWidth: 0,
@@ -18,7 +18,6 @@ let Engine = {
     AccumulatedTime: 0,
     AccumulatedTimeInOneSecond: 0,
 
-    Lag: 0,
     DeltaTime: 0,
     FixedDeltaTime: 0,
     LastFrameTimeStamp: 0, 
@@ -59,9 +58,9 @@ let Engine = {
 
         this.UpdateCoroutine();
 
-        if (this.Lag >= this.FixedDeltaTime) {
+        if (this.AccumulatedTime >= this.FixedDeltaTime) {
             this.OnFixedUpdate.forEach(fixedUpdater => fixedUpdater());
-            this.Lag -= this.FixedDeltaTime;
+            this.AccumulatedTime -= this.FixedDeltaTime;
         }
 
         this.Render();
@@ -93,6 +92,7 @@ let Engine = {
 
         this.LastFrameTimeStamp = CurrentFrameTimeStamp;
 
+        this.AccumulatedTime += this.DeltaTime;
         this.AccumulatedTimeInOneSecond += this.DeltaTime;
 
         this.FrameCount += 1;
@@ -103,8 +103,6 @@ let Engine = {
             this.FrameRate = this.FrameCountInOneSecond;
             this.FrameCountInOneSecond = 0;
         }
-
-        this.Lag += this.DeltaTime;
     },
 
     DrawFPS: function() {

@@ -2,20 +2,20 @@ class Particle {
     constructor(position = new Vector2D()) {
         this.transform = new Matrix2D();
         this.transform.Translate(position);
-        
+
+        this.XAxis = new Vector2D(1, 0);
+        this.YAxis = new Vector2D(0, 1);
+
         this.mass = 1;
         this.hasGravity = true;
 
         this.velocity = new Vector2D();
         this.angularVelocity = 0;
 
-        this.n02 = 0;
-        this.n10 = 0;
-
-        this.lastPosition = new Vector2D();
+        this.interTransform = new Matrix2D();
         this.isInterpolated = true;
 
-        this.Renderer = this.Draw.bind(this)
+        this.Renderer  = this.Draw.bind(this);
         this.Simulator = this.Simulate.bind(this);
 
         Engine.OnRender.push(this.Renderer);
@@ -29,43 +29,51 @@ class Particle {
  
     Draw() {
         if (this.isInterpolated) {
-            let interporlate = Engine.Lag / Engine.FixedDeltaTime;
+            let interporlate = Engine.DeltaTime / Engine.FixedDeltaTime;
         
-            this.lastPosition.x = this.lastPosition.x + (this.transform.n02 - this.lastPosition.x) * interporlate;
-            this.lastPosition.y = this.lastPosition.y + (this.transform.n12 - this.lastPosition.y) * interporlate;
+            this.interTransform.n02 += (this.transform.n02 - this.interTransform.n02) * interporlate;
+            this.interTransform.n12 += (this.transform.n12 - this.interTransform.n12) * interporlate;
 
-            this.DrawBodyAt(this.lastPosition.x, this.lastPosition.y);
-            this.DrawAxesAt(this.lastPosition.x, this.lastPosition.y);
+            let deltaAngle = 0;
+
+            if (this.transform.angle < this.interTransform.angle)
+                deltaAngle = (this.transform.angle + 360 - this.interTransform.angle) * interporlate;
+            else
+                deltaAngle = (this.transform.angle - this.interTransform.angle) * interporlate;
+
+            this.interTransform.Rotate(deltaAngle);
+
+            this.DrawBody(this.interTransform);
+            this.DrawAxes(this.interTransform);
         }
         else {
-            this.DrawBodyAt(this.transform.n02, this.transform.n12);
-            this.DrawAxesAt(this.transform.n02, this.transform.n12);
+            this.DrawBody(this.transform);
+            this.DrawAxes(this.transform);
         } 
     }
 
-    DrawBodyAt(x, y) {
+    DrawBody(transform) {
         Context.save();
         Context.beginPath();
         Context.lineWidth = 0.1;
         Context.strokeStyle = 'gray';
-        Context.arc(x, y, 0.4, 0, 2 * Math.PI, false);
+        Context.arc(transform.n02, transform.n12, 0.4, 0, 2 * Math.PI, false);
         Context.stroke();
         Context.closePath();
         Context.restore();
     }
 
-    DrawAxesAt(x, y) {
-        let displacement = new Vector2D();
+    DrawAxes(transform) {
+        let XAxis = transform.Multiply(this.XAxis),
+            YAxis = transform.Multiply(this.YAxis);
 
         // x axis
         Context.save();
         Context.beginPath();
         Context.lineWidth = 0.1;
         Context.strokeStyle = "#009b4e"; // dark cyan
-        Context.moveTo(x, y);
-        displacement.x = x + this.Right().x * 1.5;
-        displacement.y = y + this.Right().y * 1.5;
-        Context.lineTo(displacement.x, displacement.y);
+        Context.moveTo(transform.n02, transform.n12);
+        Context.lineTo(XAxis.x, XAxis.y);
         Context.stroke();
         Context.closePath();
 
@@ -73,10 +81,8 @@ class Particle {
         Context.beginPath();
         Context.lineWidth = 0.1;
         Context.strokeStyle = "#ff6767"; // very light red
-        Context.moveTo(x, y);
-        displacement.x = x + this.Up().x * 1.5;
-        displacement.y = y + this.Up().y * 1.5;
-        Context.lineTo(displacement.x, displacement.y);
+        Context.moveTo(transform.n02, transform.n12);
+        Context.lineTo(YAxis.x, YAxis.y);
         Context.stroke();
         Context.closePath();
         Context.restore();
@@ -88,13 +94,14 @@ class Particle {
     Up() { return this.transform.Up(); }
     Right() { return this.transform.Right(); }
     Position() { return this.transform.Position(); }
-    Rotate(angularVelocity) { this.transform.Rotate(angularVelocity * Engine.SecondsPerFixedUpdate); }
+    Rotate(degree) { this.transform.Rotate(degree); }
 
     Simulate() {
         let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);
 
-        this.lastPosition.x = this.transform.n02;
-        this.lastPosition.y = this.transform.n12;
+        // save the last postion updated by FixUpdate
+        this.interTransform.n02 = this.transform.n02;
+        this.interTransform.n12 = this.transform.n12;
 
         if (this.hasGravity) {
             this.velocity.y += -9.81 * Engine.SecondsPerFixedUpdate;
@@ -104,7 +111,9 @@ class Particle {
             this.transform.Translate(scaledVelocity);
         }
 
-        if (this.angularVelocity != 0)
-            this.Rotate(this.angularVelocity);
+        if (this.angularVelocity != 0) {
+            this.interTransform.angle = this.transform.angle;
+            this.transform.Rotate(this.angularVelocity * Engine.SecondsPerFixedUpdate);
+        }
     }
 }

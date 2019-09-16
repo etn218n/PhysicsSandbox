@@ -26,13 +26,16 @@ class Matrix2D {
     }
 
     Rotate(degree) {
+        if (degree < 0)
+            degree = 360 - degree;
+
         this.angle += degree;
         this.angle %= 360;
 
         let radian = 2 * this.angle * Math.PI / 180;
 
-        let cosSign =  this.angle.between(0, 90) || this.angle.between(270, 360) ? 1 : -1
-        let sinSign =  this.angle.between(0, 180) ? 1 : -1
+        let cosSign =  this.angle.between(0, 90) || this.angle.between(270, 360) ? 1 : -1;
+        let sinSign =  this.angle.between(0, 180) ? 1 : -1;
         
         this.n00 =  Math.sqrt((1 + Math.cos(radian)) / 2) * cosSign;
         this.n10 =  Math.sqrt((1 - Math.cos(radian)) / 2) * sinSign;

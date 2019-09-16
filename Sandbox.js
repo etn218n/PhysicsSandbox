@@ -1,32 +1,10 @@
 Engine.OnAwake.push(() => {
-    
-    document.body.addEventListener("keypress", function(event) {
-        switch(event.key) {
-            case "1": 
-            Engine.OnRender = [];
-            Engine.OnFixedUpdate = [];
-            Engine.CoroutineList = [];
-            Exercise1(); break;
-        
-            case "2":
-            Engine.OnRender = [];
-            Engine.OnFixedUpdate = [];
-            Engine.CoroutineList = [];
-            Exercise2(); break;
-
-            case "3":
-            Engine.OnRender = [];
-            Engine.OnFixedUpdate = [];
-            Engine.CoroutineList = [];
-            Exercise3(); break;
-
-            case "4": 
-            Engine.OnRender = [];
-            Engine.OnFixedUpdate = [];
-            Engine.CoroutineList = [];
-            Exercise4(); break;
-        }
-    });
+    for (let i = 0; i < 20; i++) {
+        let p = new Particle();
+        p.hasGravity = false;
+        p.velocity = new Vector2D((Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4);
+        p.angularVelocity = 360;
+    }
 });
 
 async function Timer(ms, task) {
