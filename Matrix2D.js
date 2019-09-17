@@ -24,7 +24,8 @@ class Matrix2D {
         this.n02 += (displacement.x * this.n00) + (displacement.y * this.n01);
         this.n12 += (displacement.x * this.n10) + (displacement.y * this.n11);
     }
-
+    
+    // support only counter clockwise rotation for now
     Rotate(degree) {
         if (degree < 0)
             degree = 360 - degree;

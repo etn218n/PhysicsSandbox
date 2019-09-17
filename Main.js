@@ -1,9 +1,5 @@
 var Context = null;
-<<<<<<< HEAD
-var PixelsPerUnit = 20;
-=======
-var PixelsPerUnit = 25;
->>>>>>> develop
+var PixelsPerUnit = 3;
 
 let Engine = {
     WindowWidth: 0,
@@ -161,6 +157,12 @@ let Engine = {
         }
         
         Context.restore();
+    },
+
+    SetPixelsPerUnit: function(value) {
+        Context.scale(1 / PixelsPerUnit, -1 / PixelsPerUnit);
+        PixelsPerUnit = value;
+        Context.scale(PixelsPerUnit, -PixelsPerUnit);
     }
 }
 
