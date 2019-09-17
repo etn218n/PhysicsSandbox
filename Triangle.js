@@ -1,10 +1,20 @@
 class Triangle {
     constructor(a, b, c) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
+        this.a = new Vector2D(a.x, a.y);
+        this.b = new Vector2D(b.x, b.y);
+        this.c = new Vector2D(c.x, c.y);
 
         this.transform = new Matrix2D();
+
+        this.velocity = new Vector2D();
+        this.angularVelocity = 0;
+        this.hasGravity = false;
+
+        this.Renderer = this.Draw.bind(this);
+        Engine.OnRender.push(this.Renderer);
+
+        this.Simulator = this.Simulate.bind(this);
+        Engine.OnFixedUpdate.push(this.Simulator);
     }
 
     Translate(displacement) { this.transform.Translate(displacement);}
@@ -65,5 +75,20 @@ class Triangle {
         Context.closePath();
 
         Context.restore();
+    }
+
+    Simulate() {
+        let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);
+
+        if (this.hasGravity) {
+            this.velocity.y += -9.81 * Engine.SecondsPerFixedUpdate;
+            this.transform.Translate(scaledVelocity);
+        }
+        else {  
+            this.transform.Translate(scaledVelocity);
+        }
+
+        if (this.angularVelocity != 0)
+            this.Rotate(this.angularVelocity * Engine.SecondsPerFixedUpdate);
     }
 }
