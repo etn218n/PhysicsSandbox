@@ -18,8 +18,8 @@ class Plotter {
         let min = Math.min.apply(Math, range),
             max = Math.max.apply(Math, range);
 
-        for (let x = min; x <= max; x += dx) {
-            if (x > max)
+        for (let x = min; x < max + dx; x += dx) {
+            if (x >= max)
                 this.Add(x, f(max));
             else
                 this.Add(x, f(x));
