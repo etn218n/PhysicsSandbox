@@ -11,27 +11,27 @@ function Exercise2() {
     trajectoryPlotter = [ new Plotter(), new Plotter(), new Plotter(), new Plotter(), new Plotter() ];
 
     launchVelocity[0].SetAngle(45);
-    launchVelocity[0].SetLength(50);
+    launchVelocity[0].SetLength(20);
     p[0].velocity = launchVelocity[0];
     trajectoryPlotter[0].color = "blue";
 
     launchVelocity[1].SetAngle(60);
-    launchVelocity[1].SetLength(50);
+    launchVelocity[1].SetLength(20);
     p[1].velocity = launchVelocity[1];
     trajectoryPlotter[1].color = "green";
 
     launchVelocity[2].SetAngle(30);
-    launchVelocity[2].SetLength(50);
+    launchVelocity[2].SetLength(20);
     p[2].velocity = launchVelocity[2];
     trajectoryPlotter[2].color = "red";
 
     launchVelocity[3].SetAngle(15);
-    launchVelocity[3].SetLength(50);
+    launchVelocity[3].SetLength(20);
     p[3].velocity = launchVelocity[3];
     trajectoryPlotter[3].color = "purple";
 
     launchVelocity[4].SetAngle(75);
-    launchVelocity[4].SetLength(50);
+    launchVelocity[4].SetLength(20);
     p[4].velocity = launchVelocity[4];
     trajectoryPlotter[4].color = "cyan";
 
@@ -55,7 +55,7 @@ function Exercise2() {
 
         arg.plotter.AddPoint(arg.p.Position());
 
-        while (arg.p.Position().y >= -1) {
+        while (arg.p.Position().y >= -0.4) {
             dt += Engine.DeltaTime;
 
             if (arg.p.Position().y > maxHeight)
@@ -69,7 +69,8 @@ function Exercise2() {
             yield;
         }
 
-        console.log("(" + arg.name + ")" + " Max Height: " + maxHeight);
+        console.log("(" + arg.name + ")" + " Max Height:   " + maxHeight);
+        console.log("(" + arg.name + ")" + " Max Distance: " + arg.p.Position().x);
 
         arg.p.Disable();
     }

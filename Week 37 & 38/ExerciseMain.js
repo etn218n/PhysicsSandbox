@@ -4,24 +4,28 @@ Engine.OnAwake.push(() => {
             case "1": 
             Engine.OnRender = [];
             Engine.OnFixedUpdate = [];
+            Engine.CoroutineList = [];
             Engine.SetPixelsPerUnit(20);
             Exercise1(); break;
         
             case "2":
             Engine.OnRender = [];
             Engine.OnFixedUpdate = [];
-            Engine.SetPixelsPerUnit(3);
+            Engine.CoroutineList = [];
+            Engine.SetPixelsPerUnit(15);
             Exercise2(); break;
 
             case "3":
             Engine.OnRender = [];
             Engine.OnFixedUpdate = [];
-            Engine.SetPixelsPerUnit(4);
+            Engine.CoroutineList = [];
+            Engine.SetPixelsPerUnit(15);
             Exercise3(); break;
 
             case "4":
             Engine.OnRender = [];
             Engine.OnFixedUpdate = [];
+            Engine.CoroutineList = [];
             Engine.SetPixelsPerUnit(15);
             Exercise4(); break;
         }
