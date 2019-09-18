@@ -27,9 +27,6 @@ class Matrix2D {
     
     // support only counter clockwise rotation for now
     Rotate(degree) {
-        if (degree < 0)
-            degree = 360 - degree;
-
         this.angle += degree;
         this.angle %= 360;
 
