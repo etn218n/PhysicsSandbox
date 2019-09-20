@@ -8,6 +8,8 @@ class Matrix2D {
         this.n12 = n12;
 
         this.angle = 0;
+
+        this.lastRotationDir = "CCW";
     }
 
     Up() { return new Vector2D(this.n01, this.n11); }
@@ -25,21 +27,47 @@ class Matrix2D {
         this.n12 += (displacement.x * this.n10) + (displacement.y * this.n11);
     }
     
-    // support only counter clockwise rotation for now
     Rotate(degree) {
-        this.angle += degree;
-        this.angle %= 360;
+        if (degree > 0) {
+            if (this.lastRotationDir == "CW")
+                this.angle = 360 - this.angle;
 
-        let radian = 2 * this.angle * Math.PI / 180;
+            this.angle += Math.abs(degree);
+            this.angle %= 360;
 
-        let cosSign =  this.angle.between(0, 90) || this.angle.between(270, 360) ? 1 : -1;
-        let sinSign =  this.angle.between(0, 180) ? 1 : -1;
+            let cosSign =  this.angle.between(0, 90) || this.angle.between(270, 360) ? 1 : -1;
+            let sinSign =  this.angle.between(0, 180) ? 1 : -1;
+
+            let radian = 2 * this.angle * Math.PI / 180;
         
-        this.n00 =  Math.sqrt((1 + Math.cos(radian)) / 2) * cosSign;
-        this.n10 =  Math.sqrt((1 - Math.cos(radian)) / 2) * sinSign;
+            this.n00 =  Math.sqrt((1 + Math.cos(radian)) / 2) * cosSign;
+            this.n10 =  Math.sqrt((1 - Math.cos(radian)) / 2) * sinSign;
 
-        this.n01 = -Math.sqrt((1 - Math.cos(radian)) / 2) * sinSign;
-        this.n11 =  Math.sqrt((1 + Math.cos(radian)) / 2) * cosSign;
+            this.n01 = -Math.sqrt((1 - Math.cos(radian)) / 2) * sinSign;
+            this.n11 =  Math.sqrt((1 + Math.cos(radian)) / 2) * cosSign;
+
+            this.lastRotationDir = "CCW";
+        }
+        else {
+            if (this.lastRotationDir == "CCW")
+                this.angle = 360 - this.angle;
+
+            this.angle += Math.abs(degree);
+            this.angle %= 360;
+
+            let cosSign =  this.angle.between(0, 90) || this.angle.between(270, 360) ? 1 : -1;
+            let sinSign =  this.angle.between(0, 180) ? 1 : -1;
+
+            let radian = 2 * this.angle * Math.PI / 180;
+        
+            this.n00 =  Math.sqrt((1 + Math.cos(radian)) / 2) * cosSign;
+            this.n10 = -Math.sqrt((1 - Math.cos(radian)) / 2) * sinSign;
+
+            this.n01 =  Math.sqrt((1 - Math.cos(radian)) / 2) * sinSign;
+            this.n11 =  Math.sqrt((1 + Math.cos(radian)) / 2) * cosSign;
+
+            this.lastRotationDir = "CW";
+        }
     }
 
     Multiply(vector) {

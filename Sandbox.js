@@ -12,7 +12,20 @@ Engine.OnAwake.push(() => {
 
     // let p = new Particle();
     //     p.hasGravity = false;
-    //     p.angularVelocity = -10;
+    //     p.Rotate(-30);
+    //     p.Rotate(60);
+
+
+    // document.body.addEventListener("keydown", function(event) {
+    //     if (event.key == 'd') { 
+    //         p.Rotate(-30);
+    //         console.log(p.transform.angle);
+    //     }
+    //     else if (event.key == 'a') {
+    //         p.Rotate(30);
+    //         console.log(p.transform.angle);
+    //     }
+    // });
 
     Exercise5();
 });

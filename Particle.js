@@ -41,7 +41,9 @@ class Particle {
             else
                 deltaAngle = (this.transform.angle - this.interTransform.angle) * interporlate;
 
-            this.interTransform.Rotate(deltaAngle);
+            let rotationDir = this.angularVelocity < 0 ? -1 : 1;
+
+            this.interTransform.Rotate(deltaAngle * rotationDir);
 
             this.DrawBody(this.interTransform);
             this.DrawAxes(this.interTransform);
@@ -71,7 +73,7 @@ class Particle {
         Context.save();
         Context.beginPath();
         Context.lineWidth = 0.1;
-        Context.strokeStyle = "#009b4e"; // dark cyan
+        Context.strokeStyle = "#ff6767"; // very light red
         Context.moveTo(transform.n02, transform.n12);
         Context.lineTo(XAxis.x, XAxis.y);
         Context.stroke();
@@ -80,7 +82,7 @@ class Particle {
         // y axis
         Context.beginPath();
         Context.lineWidth = 0.1;
-        Context.strokeStyle = "#ff6767"; // very light red
+        Context.strokeStyle = "#009b4e"; // dark cyan
         Context.moveTo(transform.n02, transform.n12);
         Context.lineTo(YAxis.x, YAxis.y);
         Context.stroke();

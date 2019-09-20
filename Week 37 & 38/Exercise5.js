@@ -39,7 +39,7 @@ function Exercise5() {
         p.hasGravity = false;
         p.mass = 10;
         p.Translate(new Vector2D(0, 14));
-        //p.angularVelocity = 360;
+        p.angularVelocity = -360;
 
     let Ek = 0.5  * p.mass * initialVeclocity.SquareLength();
         Ep = 9.81 * p.mass * p.Position().y;
