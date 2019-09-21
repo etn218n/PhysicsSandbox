@@ -26,6 +26,14 @@ function Exercise5() {
                 return 0;
     
             return chosenPart.a * Math.pow((x - chosenPart.d), 2) + chosenPart.b * (x - chosenPart.e) + chosenPart.c;
+        },
+
+        SlopeAngleAt(x) {
+            let y  = ramp.f(x);
+                dx = 0.01;
+                dy = ramp.f(x + dx) - y;
+
+            return Math.atan2(dy, dx);
         }
     };
     
@@ -51,52 +59,34 @@ function Exercise5() {
         if (p.Position().x >= 0 && p.Position().x <= 4)
             p.velocity = initialVeclocity;
         else if (p.Position().x > 4 && p.Position().x <= 9) {
-            if (p.Position().y >= ramp.f(p.Position().x)) {
+            if (p.Position().y >= ramp.f(p.Position().x) + 1)
                 p.hasGravity = true;
-            }
             else {
                 p.hasGravity = false;
-                // p.velocity = new Vector2D(0, 0);
-                //p.Position().y = ramp.f(p.Position().x) + pRadius;
 
-                let x = p.Position().x;
-                    y = ramp.f(p.Position().x);
-                    dx = 0.01;
-                    dy = ramp.f(x + 0.01) - y;
-                    angle = Math.atan2(dy, dx);
+                let angle = ramp.SlopeAngleAt(p.Position().x);
 
-                let newVelocity = Math.sqrt((2 / p.mass) * (E + p.mass * 9.81 * p.Position().y));
+                let newVelocity = Math.sqrt((2 / p.mass) * (E - p.mass * 9.81 * p.Position().y));
                     p.velocity.x = newVelocity * Math.cos(angle);
                     p.velocity.y = newVelocity * Math.sin(angle);
             }
         }
         else if (p.Position().x > 9 && p.Position().x <= 20) {
-            let x = p.Position().x;
-                    y = ramp.f(p.Position().x);
-                    dx = 0.01;
-                    dy = ramp.f(x + 0.01) - y;
-                    angle = Math.atan2(dy, dx);
+            let angle = ramp.SlopeAngleAt(p.Position().x);
 
-            let newVelocity = Math.sqrt((2 / p.mass) * (E + p.mass * 9.81 * p.Position().y));
+            let newVelocity = Math.sqrt((2 / p.mass) * (E - p.mass * 9.81 * p.Position().y));
                 p.velocity.x = newVelocity * Math.cos(angle);
                 p.velocity.y = newVelocity * Math.sin(angle);
         }
         else if (p.Position().x > 20 && p.Position().x <= 23) {
-            if (p.Position().y >= ramp.f(p.Position().x)) {
+            if (p.Position().y >= ramp.f(p.Position().x) - 1)
                 p.hasGravity = true;
-            }
             else {
                 p.hasGravity = false;
-                //p.velocity = new Vector2D(0, 0);
-                //p.Position().y = ramp.f(p.Position().x) + pRadius;
 
-                let x = p.Position().x;
-                    y = ramp.f(p.Position().x);
-                    dx = 0.01;
-                    dy = ramp.f(x + 0.01) - y;
-                    angle = Math.atan2(dy, dx);
+                let angle = ramp.SlopeAngleAt(p.Position().x);
 
-                let newVelocity = Math.sqrt((2 / p.mass) * (E + p.mass * 9.81 * p.Position().y));
+                let newVelocity = Math.sqrt((2 / p.mass) * (E - p.mass * 9.81 * p.Position().y));
                     p.velocity.x = newVelocity * Math.cos(angle);
                     p.velocity.y = newVelocity * Math.sin(angle);
             }
