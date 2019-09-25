@@ -12,10 +12,19 @@ class Matrix2D {
         this.lastRotationDir = "CCW";
     }
 
-    Up() { return new Vector2D(this.n01, this.n11); }
-    Right() { return new Vector2D(this.n00, this.n10); }
-    Angle() {return this.angle; }
-    Position() { return new Vector2D(this.n02, this.n12); }
+    Up()  { return new Vector2D(this.n01, this.n11); }
+    UpX() { return this.n01; }
+    UpY() { return this.n11; }
+
+    Right()  { return new Vector2D(this.n00, this.n10); }
+    RightX() { return this.n00; }
+    RightY() { return this.n10; }
+
+    Angle()  { return this.angle; }
+
+    Position()  { return new Vector2D(this.n02, this.n12); }
+    PositionX() { return this.n02; }
+    PositionY() { return this.n12; }
 
     Translate(displacement) {
         this.n02 += displacement.x;
@@ -25,6 +34,11 @@ class Matrix2D {
     LocalTranslate(displacement) {
         this.n02 += (displacement.x * this.n00) + (displacement.y * this.n01);
         this.n12 += (displacement.x * this.n10) + (displacement.y * this.n11);
+    }
+
+    SetPosition(x, y) {
+        this.n02 = x;
+        this.n12 = y;
     }
     
     Rotate(degree) {

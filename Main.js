@@ -8,6 +8,9 @@ let Engine = {
 
     MouseX: 0,
     MouseY: 0,
+    LeftMouseDown: false,
+    RightMouseDown: false,
+    MiddleMouseDown: false,
 
     FrameCount: 0,
     FrameCountInOneSecond: 0,
@@ -35,11 +38,20 @@ let Engine = {
         this.MouseY = -(e.clientY - this.WindowHeight / 2) / PixelsPerUnit;
     },
 
+    OnMouseDown(e) {
+        switch (e.button) {
+            case 0: this.LeftMouseDown   = true; break;
+            case 1: this.MiddleMouseDown = true; break;
+            case 2: this.RightMouseDown  = true; break;
+        }
+    },
+
     Init: function() {
         Context.translate(this.WindowWidth / 2, this.WindowHeight / 2);
         Context.scale(PixelsPerUnit, -PixelsPerUnit);
 
         document.body.addEventListener("mousemove", this.OnMouseMove.bind(this));
+        document.body.addEventListener("mousedown", this.OnMouseDown.bind(this));
 
         this.FixedDeltaTime = 1000 / this.FixedFrameRate;
         this.SecondsPerFixedUpdate = this.FixedDeltaTime / 1000;

@@ -41,7 +41,6 @@ function Exercise5() {
         rampPlotter.GeneratePoints([0, 40], (x) => ramp.f(x), 0.5); 
 
     let initialVeclocity = new Vector2D(2, 0);
-    let pRadius = 0.4;
 
     let p = new Particle();
         p.hasGravity = false;
@@ -53,52 +52,53 @@ function Exercise5() {
         Ep = 9.81 * p.mass * p.Position().y;
         E  = Ek + Ep; 
 
-    console.log(E);
+    function RecalculateVelocity() {
+        let angle = ramp.SlopeAngleAt(p.Position().x);
+
+        let newVelocity = Math.sqrt((2 / p.mass) * (E - p.mass * 9.81 * p.Position().y));
+            p.velocity.x = newVelocity * Math.cos(angle);
+            p.velocity.y = newVelocity * Math.sin(angle);
+    }
 
     Engine.OnFixedUpdate.push(() => {
-        if (p.Position().x >= 0 && p.Position().x <= 4)
+        if (p.Position().x >= 0 && p.Position().x <= 4) 
+        {
             p.velocity = initialVeclocity;
-        else if (p.Position().x > 4 && p.Position().x <= 9) {
-            if (p.Position().y >= ramp.f(p.Position().x) + 1)
+        }
+        else if (p.Position().x > 4 && p.Position().x <= 9)
+        {
+            if (p.Position().y >= ramp.f(p.Position().x) + 1) 
                 p.hasGravity = true;
-            else {
+            else 
+            {
                 p.hasGravity = false;
-
-                let angle = ramp.SlopeAngleAt(p.Position().x);
-
-                let newVelocity = Math.sqrt((2 / p.mass) * (E - p.mass * 9.81 * p.Position().y));
-                    p.velocity.x = newVelocity * Math.cos(angle);
-                    p.velocity.y = newVelocity * Math.sin(angle);
+                RecalculateVelocity();
             }
         }
-        else if (p.Position().x > 9 && p.Position().x <= 20) {
-            let angle = ramp.SlopeAngleAt(p.Position().x);
-
-            let newVelocity = Math.sqrt((2 / p.mass) * (E - p.mass * 9.81 * p.Position().y));
-                p.velocity.x = newVelocity * Math.cos(angle);
-                p.velocity.y = newVelocity * Math.sin(angle);
+        else if (p.Position().x > 9 && p.Position().x <= 20) 
+        {
+            p.hasGravity = false;
+            RecalculateVelocity();
         }
-        else if (p.Position().x > 20 && p.Position().x <= 23) {
+        else if (p.Position().x > 20 && p.Position().x <= 23) 
+        {
             if (p.Position().y >= ramp.f(p.Position().x) - 1)
                 p.hasGravity = true;
-            else {
+            else 
+            {
                 p.hasGravity = false;
-
-                let angle = ramp.SlopeAngleAt(p.Position().x);
-
-                let newVelocity = Math.sqrt((2 / p.mass) * (E - p.mass * 9.81 * p.Position().y));
-                    p.velocity.x = newVelocity * Math.cos(angle);
-                    p.velocity.y = newVelocity * Math.sin(angle);
+                RecalculateVelocity();
             }
         }
         else if (p.Position().x > 23 && p.Position().x <= 28) {
+            // launching ball with the last phase's velocity
+            // bouncing reflection is not applied since I don't know how it works
             p.hasGravity = true;
         }
-        else if (p.Position().x > 28)
-            p.hasGravity = true;
-
-        if (p.Position().y.between(0, -1))
-            console.log(p.Position().x);
+        else if (p.Position().x > 28) {
+            // free fall
+            p.hasGravity = true; 
+        }
     });    
     
     Engine.OnRender.push(() => {
