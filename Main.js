@@ -208,3 +208,8 @@ Array.prototype.remove = function(wantedItem) {
         }
     }
 }
+
+async function Timer(ms, task) {
+    await new Promise(resolve => setTimeout(resolve, ms));
+    task();
+}

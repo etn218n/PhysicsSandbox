@@ -26,12 +26,22 @@ class Matrix2D {
     PositionX() { return this.n02; }
     PositionY() { return this.n12; }
 
-    Translate(displacement) {
+    Translate(x, y) {
+        this.n02 += x;
+        this.n12 += y;
+    }
+
+    TranslateVector(displacement) {
         this.n02 += displacement.x;
         this.n12 += displacement.y;
     }
 
-    LocalTranslate(displacement) {
+    LocalTranslate(x, y) {
+        this.n02 += (x * this.n00) + (y * this.n01);
+        this.n12 += (x * this.n10) + (y * this.n11);
+    }
+
+    LocalTranslateVector(displacement) {
         this.n02 += (displacement.x * this.n00) + (displacement.y * this.n01);
         this.n12 += (displacement.x * this.n10) + (displacement.y * this.n11);
     }
@@ -39,6 +49,11 @@ class Matrix2D {
     SetPosition(x, y) {
         this.n02 = x;
         this.n12 = y;
+    }
+
+    SetPositionVector(position) {
+        this.n02 = position.x;
+        this.n12 = position.y;
     }
     
     Rotate(degree) {
@@ -84,12 +99,12 @@ class Matrix2D {
         }
     }
 
-    Multiply(vector) {
+    MultiplyVector(v) {
         let result = new Vector2D();
 
-        result.x = (vector.x * this.n00) + (vector.y * this.n01) + (vector.z * this.n02);
-        result.y = (vector.x * this.n10) + (vector.y * this.n11) + (vector.z * this.n12);
-        result.z = vector.z;
+        result.x = (v.x * this.n00) + (v.y * this.n01) + (v.z * this.n02);
+        result.y = (v.x * this.n10) + (v.y * this.n11) + (v.z * this.n12);
+        result.z = v.z;
 
         return result;
     }

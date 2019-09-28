@@ -1,24 +1,19 @@
-// let p;
+let p;
+let rect;
+let tri;
 
-// Engine.OnAwake.push(() => {
-//     p = new Rectangle([new Vector2D(-1, 1), new Vector2D(1, 1), new Vector2D(1, -1), new Vector2D(-1, -1)]);
-//     p.Translate(new Vector2D(2, 2));
-//     p.angularVelocity = 180;
-//     p.velocity = new Vector2D(2, 0);
-// });
+Engine.OnAwake.push(() => {
+    rect = new Rectangle(3, 4);
+    rect.Translate(2, 2);
+    rect.angularVelocity = 720;
+    rect.isInterpolated = true;
 
-// Engine.OnUpdate.push(() => {
-//     if (Engine.MouseX.between(p.transformPoints[0].x, p.transformPoints[2].x) 
-//         && Engine.MouseY.between(p.transformPoints[0].y, p.transformPoints[2].y)) {
-//             p.color = "Red";
-//             //console.log(Engine.MouseX, Engine.MouseY);
-//         }
-//         else {
-//             p.color = "Gray";
-//         }
-// })
+    p = new Particle(6, 6);
+    p.angularVelocity = 720;
+    p.isInterpolated = true;
 
-async function Timer(ms, task) {
-    await new Promise(resolve => setTimeout(resolve, ms));
-    task();
-}
+    tri = new Triangle(0, 1, 1, 0, -1, 0);
+    tri.Translate(-2, -2);
+    tri.angularVelocity = 720;
+    tri.isInterpolated = true;
+});

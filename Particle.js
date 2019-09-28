@@ -1,13 +1,23 @@
 class Particle {
-    constructor(position = new Vector2D()) {
-        this.transform = new Matrix2D();
-        this.transform.Translate(position);
+    static GetID() {
+        if (Particle.prototype.id == undefined)
+            Particle.prototype.id = 1;
+        
+        return Particle.prototype.id++;
+    }
 
-        this.XAxis = new Vector2D(1, 0);
-        this.YAxis = new Vector2D(0, 1);
+    constructor(x = 0, y = 0) {
+        this.id = Particle.GetID();
+
+        this.transform = new Matrix2D();
+        this.transform.Translate(x, y);
+
+        this.xAxis = new Vector2D(1, 0);
+        this.yAxis = new Vector2D(0, 1);
+        this.axisLength = 1;
 
         this.mass = 1;
-        this.hasGravity = true;
+        this.hasGravity = false;
 
         this.velocity = new Vector2D();
         this.angularVelocity = 0;
@@ -15,11 +25,18 @@ class Particle {
         this.interTransform = new Matrix2D();
         this.isInterpolated = true;
 
+        this.color = "Gray";
+
         this.Renderer  = this.Draw.bind(this);
         this.Simulator = this.Simulate.bind(this);
 
         Engine.OnRender.push(this.Renderer);
-        Engine.OnFixedUpdate.push(this.Simulator);
+        Engine.OnFixedUpdate.push(this.Simulator);  
+    }
+
+    set axisLength(length) {
+        this.xAxis.x = length;
+        this.yAxis.y = length;
     }
 
     Disable() {
@@ -56,18 +73,15 @@ class Particle {
 
     DrawBody(transform) {
         Context.save();
-        Context.beginPath();
-        Context.lineWidth = 0.1;
-        Context.strokeStyle = 'gray';
+        Context.fillStyle = this.color;
         Context.arc(transform.n02, transform.n12, 0.4, 0, 2 * Math.PI, false);
-        Context.stroke();
-        Context.closePath();
+        Context.fill();
         Context.restore();
     }
 
     DrawAxes(transform) {
-        let XAxis = transform.Multiply(this.XAxis),
-            YAxis = transform.Multiply(this.YAxis);
+        let xAxis = transform.MultiplyVector(this.xAxis),
+            yAxis = transform.MultiplyVector(this.yAxis);
 
         // x axis
         Context.save();
@@ -75,7 +89,7 @@ class Particle {
         Context.lineWidth = 0.1;
         Context.strokeStyle = "#ff6767"; // very light red
         Context.moveTo(transform.n02, transform.n12);
-        Context.lineTo(XAxis.x, XAxis.y);
+        Context.lineTo(xAxis.x, xAxis.y);
         Context.stroke();
         Context.closePath();
 
@@ -84,18 +98,30 @@ class Particle {
         Context.lineWidth = 0.1;
         Context.strokeStyle = "#009b4e"; // dark cyan
         Context.moveTo(transform.n02, transform.n12);
-        Context.lineTo(YAxis.x, YAxis.y);
+        Context.lineTo(yAxis.x, yAxis.y);
         Context.stroke();
         Context.closePath();
         Context.restore();
     }
 
-    Translate(displacement) { this.transform.Translate(displacement);}
-    LocalTranslate(displacement) { this.transform.LocalTranslate(displacement);}
+    Translate(x, y) { this.transform.Translate(x, y); }
+    TranslateVector(displacement) { this.transform.TranslateVector(displacement);}
 
-    Up() { return this.transform.Up(); }
-    Right() { return this.transform.Right(); }
-    Position() { return this.transform.Position(); }
+    LocalTranslate(x, y) { this.transform.LocalTranslate(x, y);}
+    LocalTranslateVector(displacement) { this.transform.LocalTranslateVector(displacement);}
+
+    Up()  { return this.transform.Up();  }
+    UpX() { return this.transform.UpX(); }
+    UpY() { return this.transform.UpY(); }
+
+    Right()  { return this.transform.Right();  }
+    RightX() { return this.transform.RightX(); }
+    RightY() { return this.transform.RightY(); }
+
+    Position()  { return this.transform.Position();  }
+    PositionX() { return this.transform.PositionX(); }
+    PositionY() { return this.transform.PositionY(); }
+
     Rotate(degree) { this.transform.Rotate(degree); }
 
     Simulate() {
@@ -107,10 +133,10 @@ class Particle {
 
         if (this.hasGravity) {
             this.velocity.y += -9.81 * Engine.SecondsPerFixedUpdate;
-            this.transform.Translate(scaledVelocity);
+            this.transform.TranslateVector(scaledVelocity);
         }
         else {  
-            this.transform.Translate(scaledVelocity);
+            this.transform.TranslateVector(scaledVelocity);
         }
 
         if (this.angularVelocity != 0) {
