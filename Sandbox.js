@@ -17,3 +17,7 @@ Engine.OnAwake.push(() => {
     tri.angularVelocity = 360;
     tri.isExtrapolated = true;
 });
+
+Engine.OnUpdate.push(() => {
+    rect.SetPosition(Engine.MouseX, Engine.MouseY);
+});

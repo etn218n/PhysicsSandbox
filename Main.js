@@ -46,12 +46,21 @@ let Engine = {
         }
     },
 
+    OnMouseUp(e) {
+        switch (e.button) {
+            case 0: this.LeftMouseDown   = false; break;
+            case 1: this.MiddleMouseDown = false; break;
+            case 2: this.RightMouseDown  = false; break;
+        }
+    },
+
     Init: function() {
         Context.translate(this.WindowWidth / 2, this.WindowHeight / 2);
         Context.scale(PixelsPerUnit, -PixelsPerUnit);
 
         document.body.addEventListener("mousemove", this.OnMouseMove.bind(this));
         document.body.addEventListener("mousedown", this.OnMouseDown.bind(this));
+        document.body.addEventListener("mouseup",   this.OnMouseUp.bind(this));
 
         this.FixedDeltaTime = 1000 / this.FixedFrameRate;
         this.SecondsPerFixedUpdate = this.FixedDeltaTime / 1000;

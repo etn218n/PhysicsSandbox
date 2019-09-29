@@ -121,6 +121,9 @@ class Particle {
     Position()  { return this.transform.Position();  }
     PositionX() { return this.transform.PositionX(); }
     PositionY() { return this.transform.PositionY(); }
+    
+    SetPosition(x, y) { this.transform.SetPosition(x, y); }
+    SetPositionVector(position) { this.transform.SetPositionVector(position); }
 
     Rotate(degree) { this.transform.Rotate(degree); }
 
