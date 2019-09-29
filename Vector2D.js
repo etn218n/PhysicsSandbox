@@ -9,6 +9,12 @@ class Vector2D {
         console.log("(" + this.x + "," + this.y + ")");
     }
 
+    Equal(other) {
+        return this.x == other.x && 
+               this.y == other.y && 
+               this.z == other.z;
+    }
+
     Add(v) {
         this.x += v.x;
         this.y += v.y;

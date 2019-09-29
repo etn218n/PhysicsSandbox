@@ -1,10 +1,13 @@
 var Context = null;
-var PixelsPerUnit = 15;
 
 let Engine = {
-    WindowWidth: 0,
-    WindowHeight: 0,
+    CanvasWidth:  0,
+    CanvasHeight: 0,
+    PixelsPerUnit: 15,
     ClearWindow: true,
+
+    CameraWidth:  0,
+    CameraHeight: 0,
 
     MouseX: 0,
     MouseY: 0,
@@ -34,8 +37,8 @@ let Engine = {
     CoroutineList: [],
 
     OnMouseMove(e) {
-        this.MouseX =  (e.clientX - this.WindowWidth  / 2) / PixelsPerUnit;
-        this.MouseY = -(e.clientY - this.WindowHeight / 2) / PixelsPerUnit;
+        this.MouseX =  (e.clientX - this.CanvasWidth  / 2) / this.PixelsPerUnit;
+        this.MouseY = -(e.clientY - this.CanvasHeight / 2) / this.PixelsPerUnit;
     },
 
     OnMouseDown(e) {
@@ -55,8 +58,11 @@ let Engine = {
     },
 
     Init: function() {
-        Context.translate(this.WindowWidth / 2, this.WindowHeight / 2);
-        Context.scale(PixelsPerUnit, -PixelsPerUnit);
+        Context.translate(this.CanvasWidth / 2, this.CanvasHeight / 2);
+        Context.scale(this.PixelsPerUnit, -this.PixelsPerUnit);
+
+        this.CameraWidth  = this.CanvasWidth  / (2 * this.PixelsPerUnit);
+        this.CameraHeight = this.CanvasHeight / (2 * this.PixelsPerUnit);
 
         document.body.addEventListener("mousemove", this.OnMouseMove.bind(this));
         document.body.addEventListener("mousedown", this.OnMouseDown.bind(this));
@@ -129,15 +135,15 @@ let Engine = {
     DrawFPS: function() {
         Context.save();
         Context.font = "20px Comic Sans MS";
-        Context.scale(1 / PixelsPerUnit, - 1 / PixelsPerUnit);
-        Context.translate(-this.WindowWidth / 2 + 30, -this.WindowHeight / 2 + 30);
+        Context.scale(1 / this.PixelsPerUnit, - 1 / this.PixelsPerUnit);
+        Context.translate(-this.CanvasWidth / 2 + 30, -this.CanvasHeight / 2 + 30);
         Context.fillText("FPS: " + this.FrameRate, 0, 0);
         Context.restore();
     },
 
     Clear: function() {
         if (this.ClearWindow == true)
-            Context.clearRect(-this.WindowWidth / 2, -this.WindowHeight / 2, this.WindowWidth, this.WindowHeight);
+            Context.clearRect(-this.CanvasWidth / 2, -this.CanvasHeight / 2, this.CanvasWidth, this.CanvasHeight);
     },
 
     DrawAxes: function() {
@@ -145,7 +151,7 @@ let Engine = {
 
         let dotSize = 0.15;
 
-        for (let x = 0; x <= this.WindowWidth / 2; x += 1) {
+        for (let x = 0; x <= this.CameraWidth; x += 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
             Context.arc(x, 0, dotSize, 0, 2 * Math.PI, false);
@@ -153,7 +159,7 @@ let Engine = {
             Context.closePath();
         }
 
-        for (let x = 0; x >= -this.WindowWidth / 2; x -= 1) {
+        for (let x = 0; x >= -this.CameraWidth; x -= 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
             Context.arc(x, 0, dotSize, 0, 2 * Math.PI, false);
@@ -161,7 +167,7 @@ let Engine = {
             Context.closePath();
         }
 
-        for (let y = 0 ; y <= this.WindowHeight / 2; y += 1) {
+        for (let y = 0 ; y <= this.CameraHeight; y += 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
             Context.arc(0, y, dotSize, 0, 2 * Math.PI, false);
@@ -169,7 +175,7 @@ let Engine = {
             Context.closePath();
         }
 
-        for (let y = 0 ; y >= -this.WindowHeight / 2; y -= 1) {
+        for (let y = 0 ; y >= -this.CameraHeight; y -= 1) {
             Context.beginPath();
             Context.fillStyle = 'gray'
             Context.arc(0, y, dotSize, 0, 2 * Math.PI, false);
@@ -181,9 +187,12 @@ let Engine = {
     },
 
     SetPixelsPerUnit: function(value) {
-        Context.scale(1 / PixelsPerUnit, -1 / PixelsPerUnit);
-        PixelsPerUnit = value;
-        Context.scale(PixelsPerUnit, -PixelsPerUnit);
+        Context.scale(1 / this.PixelsPerUnit, -1 / this.PixelsPerUnit);
+        this.PixelsPerUnit = value;
+        Context.scale(this.PixelsPerUnit, -this.PixelsPerUnit);
+
+        this.CameraWidth  = this.CanvasWidth  / (2 * this.PixelsPerUnit);
+        this.CameraHeight = this.CanvasHeight / (2 * this.PixelsPerUnit);
     }
 }
 
@@ -195,8 +204,8 @@ window.onload = function() {
 
     Context = context;
 
-    Engine.WindowWidth  = width;
-    Engine.WindowHeight = height;
+    Engine.CanvasWidth  = width;
+    Engine.CanvasHeight = height;
 
     Engine.Init();
     Engine.GameLoop();

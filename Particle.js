@@ -121,13 +121,46 @@ class Particle {
     Position()  { return this.transform.Position();  }
     PositionX() { return this.transform.PositionX(); }
     PositionY() { return this.transform.PositionY(); }
-    
+
     SetPosition(x, y) { this.transform.SetPosition(x, y); }
     SetPositionVector(position) { this.transform.SetPositionVector(position); }
 
     Rotate(degree) { this.transform.Rotate(degree); }
 
+    CollisionEngine() {
+        let hit = this.HitWindowBoundingBox() 
+
+        if (hit != null)
+        {
+            if (hit.x != 0)
+                this.velocity.x = -this.velocity.x;
+
+            if (hit.y != 0)
+                this.velocity.y = -this.velocity.y;
+                
+            console.log("Hit");
+        }
+    }
+
+    HitWindowBoundingBox() {
+        if (this.transform.n02 - 0.4 <= -Engine.CameraWidth)
+            return new Vector2D(1, 0);
+
+        if (this.transform.n02 + 0.4 >= Engine.CameraWidth)
+            return new Vector2D(-1, 0);
+
+        if (this.transform.n12 - 0.4 <= -Engine.CameraHeight)
+            return new Vector2D(0, 1);
+
+        if(this.transform.n12 + 0.4 >= Engine.CameraHeight)
+            return new Vector2D(0, -1);
+ 
+        return null;
+    }
+
     Simulate() {
+        this.CollisionEngine();
+
         let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);
 
         // save the last postion updated by FixUpdate
@@ -145,6 +178,6 @@ class Particle {
         if (this.angularVelocity != 0) {
             this.extrapolatedTransform.angle = this.transform.angle;
             this.transform.Rotate(this.angularVelocity * Engine.SecondsPerFixedUpdate);
-        }
+        } 
     }
 }
