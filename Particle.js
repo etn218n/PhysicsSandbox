@@ -22,8 +22,8 @@ class Particle {
         this.velocity = new Vector2D();
         this.angularVelocity = 0;
 
-        this.interTransform = new Matrix2D();
-        this.isInterpolated = true;
+        this.extrapolatedTransform = new Matrix2D();
+        this.isExtrapolated = true;
 
         this.color = "Gray";
 
@@ -45,25 +45,25 @@ class Particle {
     }
  
     Draw() {
-        if (this.isInterpolated) {
-            let interporlate = Engine.DeltaTime / Engine.FixedDeltaTime;
+        if (this.isExtrapolated) {
+            let interporlate = Engine.Lag / Engine.FixedDeltaTime;
         
-            this.interTransform.n02 += (this.transform.n02 - this.interTransform.n02) * interporlate;
-            this.interTransform.n12 += (this.transform.n12 - this.interTransform.n12) * interporlate;
+            this.extrapolatedTransform.n02 += (this.transform.n02 - this.extrapolatedTransform.n02) * interporlate;
+            this.extrapolatedTransform.n12 += (this.transform.n12 - this.extrapolatedTransform.n12) * interporlate;
 
             let deltaAngle = 0;
 
-            if (this.transform.angle < this.interTransform.angle)
-                deltaAngle = (this.transform.angle + 360 - this.interTransform.angle) * interporlate;
+            if (this.transform.angle < this.extrapolatedTransform.angle)
+                deltaAngle = (this.transform.angle + 360 - this.extrapolatedTransform.angle) * interporlate;
             else
-                deltaAngle = (this.transform.angle - this.interTransform.angle) * interporlate;
+                deltaAngle = (this.transform.angle - this.extrapolatedTransform.angle) * interporlate;
 
             let rotationDir = this.angularVelocity < 0 ? -1 : 1;
 
-            this.interTransform.Rotate(deltaAngle * rotationDir);
+            this.extrapolatedTransform.Rotate(deltaAngle * rotationDir);
 
-            this.DrawBody(this.interTransform);
-            this.DrawAxes(this.interTransform);
+            this.DrawBody(this.extrapolatedTransform);
+            this.DrawAxes(this.extrapolatedTransform);
         }
         else {
             this.DrawBody(this.transform);
@@ -128,8 +128,8 @@ class Particle {
         let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);
 
         // save the last postion updated by FixUpdate
-        this.interTransform.n02 = this.transform.n02;
-        this.interTransform.n12 = this.transform.n12;
+        this.extrapolatedTransform.n02 = this.transform.n02;
+        this.extrapolatedTransform.n12 = this.transform.n12;
 
         if (this.hasGravity) {
             this.velocity.y += -9.81 * Engine.SecondsPerFixedUpdate;
@@ -140,7 +140,7 @@ class Particle {
         }
 
         if (this.angularVelocity != 0) {
-            this.interTransform.angle = this.transform.angle;
+            this.extrapolatedTransform.angle = this.transform.angle;
             this.transform.Rotate(this.angularVelocity * Engine.SecondsPerFixedUpdate);
         }
     }

@@ -16,9 +16,9 @@ let Engine = {
     FrameCountInOneSecond: 0,
     
     FrameRate: 0,
-    FixedFrameRate: 45,
+    FixedFrameRate: 50,
 
-    AccumulatedTime: 0,
+    Lag: 0,
     AccumulatedTimeInOneSecond: 0,
 
     DeltaTime: 0,
@@ -70,9 +70,9 @@ let Engine = {
 
         this.UpdateCoroutine();
 
-        if (this.AccumulatedTime >= this.FixedDeltaTime) {
+        if (this.Lag >= this.FixedDeltaTime) {
             this.OnFixedUpdate.forEach(fixedUpdater => fixedUpdater());
-            this.AccumulatedTime -= this.FixedDeltaTime;
+            this.Lag -= this.FixedDeltaTime;
         }
 
         this.Render();
@@ -104,7 +104,7 @@ let Engine = {
 
         this.LastFrameTimeStamp = CurrentFrameTimeStamp;
 
-        this.AccumulatedTime += this.DeltaTime;
+        this.Lag += this.DeltaTime;
         this.AccumulatedTimeInOneSecond += this.DeltaTime;
 
         this.FrameCount += 1;
