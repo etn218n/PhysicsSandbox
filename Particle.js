@@ -1,6 +1,6 @@
 class Particle {
     static GetID() {
-        if (Particle.prototype.id == undefined)
+        if (Particle.prototype.id === undefined)
             Particle.prototype.id = 1;
         
         return Particle.prototype.id++;
@@ -130,12 +130,12 @@ class Particle {
     CollisionEngine() {
         let hit = this.HitWindowBoundingBox() 
 
-        if (hit != null)
+        if (hit !== null)
         {
-            if (hit.x != 0)
+            if (hit.x !== 0)
                 this.velocity.x = -this.velocity.x;
 
-            if (hit.y != 0)
+            if (hit.y !== 0)
                 this.velocity.y = -this.velocity.y;
                 
             console.log("Hit");

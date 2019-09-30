@@ -10,9 +10,9 @@ class Vector2D {
     }
 
     Equal(other) {
-        return this.x == other.x && 
-               this.y == other.y && 
-               this.z == other.z;
+        return this.x === other.x && 
+               this.y === other.y && 
+               this.z === other.z;
     }
 
     Add(v) {

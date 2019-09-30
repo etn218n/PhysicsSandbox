@@ -58,7 +58,7 @@ class Matrix2D {
     
     Rotate(degree) {
         if (degree > 0) {
-            if (this.lastRotationDir == "CW")
+            if (this.lastRotationDir === "CW")
                 this.angle = 360 - this.angle;
 
             this.angle += Math.abs(degree);
@@ -78,7 +78,7 @@ class Matrix2D {
             this.lastRotationDir = "CCW";
         }
         else {
-            if (this.lastRotationDir == "CCW")
+            if (this.lastRotationDir === "CCW")
                 this.angle = 360 - this.angle;
 
             this.angle += Math.abs(degree);
