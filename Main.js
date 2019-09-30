@@ -194,7 +194,39 @@ let Engine = {
         this.CameraWidth  = this.CanvasWidth  / (2 * this.PixelsPerUnit);
         this.CameraHeight = this.CanvasHeight / (2 * this.PixelsPerUnit);
     }
-}
+};
+
+let PhysicsEngine = {
+    OnMotionUpdate: [],
+    OnCollisionUpdate: [],
+
+    ColliderList: [],
+    CollidedIndexList: [],
+
+    Init: function() {
+        Engine.OnFixedUpdate.push(this.Update.bind(this));
+    },
+
+    Update: function() {
+        this.OnCollisionUpdate.forEach(collisionUpdater => collisionUpdater());
+
+        this.CollidedIndexList.sort(function (a, b) {
+            if (a > b) return -1;
+            if (b > a) return  1;
+            return 0;
+        });
+        
+        this.CollidedIndexList.forEach(index => {
+            this.ColliderList[index].Disable();
+        });
+
+        console.log(this.ColliderList.length);
+
+        this.CollidedIndexList = [];
+
+        this.OnMotionUpdate.forEach(motionUpdater => motionUpdater());
+    }
+};
 
 window.onload = function() {
     let canvas  = document.getElementById("canvas"),
@@ -208,6 +240,8 @@ window.onload = function() {
     Engine.CanvasHeight = height;
 
     Engine.Init();
+    PhysicsEngine.Init();
+
     Engine.GameLoop();
 }
 

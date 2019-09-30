@@ -26,12 +26,16 @@ class Particle {
         this.isExtrapolated = true;
 
         this.color = "Gray";
+        this.radius = 0.4;
 
         this.Renderer  = this.Draw.bind(this);
-        this.Simulator = this.Simulate.bind(this);
+        this.MotionUpdater = this.OnMotionUpdate.bind(this);
+        this.CollisionUpdater = this.OnCollisionUpdate.bind(this);
 
         Engine.OnRender.push(this.Renderer);
-        Engine.OnFixedUpdate.push(this.Simulator);  
+        PhysicsEngine.OnMotionUpdate.push(this.MotionUpdater);  
+        PhysicsEngine.OnCollisionUpdate.push(this.CollisionUpdater);  
+        PhysicsEngine.ColliderList.push(this);
     }
 
     set axisLength(length) {
@@ -41,7 +45,9 @@ class Particle {
 
     Disable() {
         Engine.OnRender.remove(this.Renderer);
-        Engine.OnFixedUpdate.remove(this.Simulator);
+        PhysicsEngine.OnMotionUpdate.remove(this.MotionUpdater);
+        PhysicsEngine.OnCollisionUpdate.remove(this.CollisionUpdater);
+        PhysicsEngine.ColliderList.remove(this);
     }
  
     Draw() {
@@ -74,7 +80,7 @@ class Particle {
     DrawBody(transform) {
         Context.save();
         Context.fillStyle = this.color;
-        Context.arc(transform.n02, transform.n12, 0.4, 0, 2 * Math.PI, false);
+        Context.arc(transform.n02, transform.n12, this.radius, 0, 2 * Math.PI, false);
         Context.fill();
         Context.restore();
     }
@@ -127,18 +133,27 @@ class Particle {
 
     Rotate(degree) { this.transform.Rotate(degree); }
 
-    CollisionEngine() {
-        let hit = this.HitWindowBoundingBox() 
+    HitOther() {
+        let thisIndex;
 
-        if (hit !== null)
-        {
-            if (hit.x !== 0)
-                this.velocity.x = -this.velocity.x;
+        for (let i = 0; i < PhysicsEngine.ColliderList.length; i++) {
+            if (PhysicsEngine.ColliderList[i] === this) {
+                thisIndex = i;
+                break;
+            }
+        }
 
-            if (hit.y !== 0)
-                this.velocity.y = -this.velocity.y;
-                
-            console.log("Hit");
+        for (let i = 0; i < PhysicsEngine.ColliderList.length; i++) {
+            if (PhysicsEngine.ColliderList[i] === this)
+                continue;
+
+            let sumRadiusSquare = Math.pow(this.radius + PhysicsEngine.ColliderList[i].radius, 2),
+                centerDistanceSquare = Math.pow(this.PositionX() - PhysicsEngine.ColliderList[i].PositionX(), 2) + Math.pow(this.PositionY() - PhysicsEngine.ColliderList[i].PositionY(), 2);
+    
+            if (centerDistanceSquare <= sumRadiusSquare) {
+                PhysicsEngine.CollidedIndexList.unshift(thisIndex);
+                return;
+            }
         }
     }
 
@@ -158,9 +173,21 @@ class Particle {
         return null;
     }
 
-    Simulate() {
-        this.CollisionEngine();
+    OnCollisionUpdate() {
+        let hit = this.HitWindowBoundingBox();
 
+        if (hit !== null) {
+            if (hit.x !== 0)
+                this.velocity.x = -this.velocity.x;
+
+            if (hit.y !== 0)
+                this.velocity.y = -this.velocity.y;
+        }
+
+        this.HitOther();
+    }
+
+    OnMotionUpdate() {
         let scaledVelocity = Vector.Scale(this.velocity, Engine.SecondsPerFixedUpdate);
 
         // save the last postion updated by FixUpdate

@@ -1,33 +1,32 @@
-let p;
-let rect;
-let tri;
-
 Engine.OnAwake.push(() => {
-    rect = new Rectangle(3, 4);
-    rect.Translate(2, 2);
-    rect.angularVelocity = 360;
-    rect.hasGravity = true;
-    rect.isExtrapolated = true;
+    //Exercise3();
 
-    p = new Particle(6, 6);
-    p.angularVelocity = 360;
-    p.velocity = new Vector2D(10, 10);
-    //p.hasGravity = true;
-    p.isExtrapolated = true;
+    for (let i = 0; i < 40; i++) {
+        let p = new Particle(Random(-20, 20), Random(-20, 20));
+            p.velocity = new Vector2D(Random(-50, 50), Random(-50, 50));
+            p.velocity = new Vector2D(20, 20);
+    }
 
-    tri = new Triangle(0, 1, 1, 0, -1, 0);
-    tri.Translate(-2, -2);
-    tri.angularVelocity = 360;
-    tri.isExtrapolated = true;
+    //let rect = new Rectangle();
 
-    document.body.addEventListener("keypress", event => {
-        if (event.key == 'w')
-            Engine.SetPixelsPerUnit(10);
-        else if (event.key == 's')
-            Engine.SetPixelsPerUnit(15);
-    });
+    // let p1 = new Particle();
+    //     p1.velocity = new Vector2D(5, 0);
+
+    // let p2 = new Particle(10, 0);
+    //     p2.velocity = new Vector2D(-5, 0);
+
+    // let p3 = new Particle(0, 5);
+    //     p3.velocity = new Vector2D(5, 0);
+
+    // let p4 = new Particle(30, 5);
+    //     p4.velocity = new Vector2D(-5, 0);
+
+    // console.log(Particle.prototype.colliderList.length);
 });
 
-Engine.OnUpdate.push(() => {
-    //rect.SetPosition(Engine.MouseX, Engine.MouseY);
-});
+function Random(a, b) {
+    let min = Math.min.apply(Math, [a, b]),
+        max = Math.max.apply(Math, [a, b]);
+
+    return Math.random() * (max - min) + min;
+}

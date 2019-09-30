@@ -16,6 +16,28 @@ class Rectangle extends Particle {
             this.axisLength = (height / 2) + 1;
     }
 
+    HitWindowBoundingBox() {
+        if (this.transform.n02 - (this.width / 2)  <= -Engine.CameraWidth)
+            return true;
+
+        if (this.transform.n02 + (this.width / 2)  >=  Engine.CameraWidth)
+            return true
+
+        if (this.transform.n12 - (this.height / 2) <= -Engine.CameraHeight)
+            return true;
+
+        if (this.transform.n12 + (this.height / 2)  >=  Engine.CameraHeight)
+            return true;
+ 
+        return false
+    }
+
+    CollisionEngine() {
+        if (this.HitWindowBoundingBox())
+            this.velocity = new Vector2D(0, 0);
+
+    }
+
     DrawBody(transform) {
         Context.save();
         Context.beginPath();
