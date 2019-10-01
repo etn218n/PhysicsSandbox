@@ -69,11 +69,13 @@ class Particle {
             this.extrapolatedTransform.Rotate(deltaAngle * rotationDir);
 
             this.DrawBody(this.extrapolatedTransform);
-            this.DrawAxes(this.extrapolatedTransform);
+            //this.DrawAxes(this.extrapolatedTransform);
+            this.DrawLabel(this.extrapolatedTransform);
         }
         else {
             this.DrawBody(this.transform);
-            this.DrawAxes(this.transform);
+            //this.DrawAxes(this.transform);
+            this.DrawLabel(this.transform);
         } 
     }
 
@@ -83,6 +85,18 @@ class Particle {
         Context.arc(transform.n02, transform.n12, this.radius, 0, 2 * Math.PI, false);
         Context.fill();
         Context.restore();
+    }
+
+    DrawLabel(transform) {
+        Context.save();
+        Context.translate(transform.n02, transform.n12);
+        Context.scale(1, -1);
+
+        Context.font = "1px Comic Sans MS";
+        Context.textAlign = "center";
+
+        Context.fillText(this.id, 0, 0.3);
+        Context.restore(); 
     }
 
     DrawAxes(transform) {

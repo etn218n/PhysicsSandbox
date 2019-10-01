@@ -11,7 +11,7 @@ class Rectangle extends Particle {
         this.d = new Vector2D(-this.width / 2, -this.height / 2);
 
         if (this.width > this.height)
-            this.axisLength = (width / 2) + 1;
+            this.axisLength = (width / 2)  + 1;
         else
             this.axisLength = (height / 2) + 1;
     }
