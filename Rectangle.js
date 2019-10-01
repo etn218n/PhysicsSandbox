@@ -18,24 +18,49 @@ class Rectangle extends Particle {
 
     HitWindowBoundingBox() {
         if (this.transform.n02 - (this.width / 2)  <= -Engine.CameraWidth)
-            return true;
+            return new Vector2D(1, 0);
 
         if (this.transform.n02 + (this.width / 2)  >=  Engine.CameraWidth)
-            return true
+            return new Vector2D(-1, 0);
 
         if (this.transform.n12 - (this.height / 2) <= -Engine.CameraHeight)
-            return true;
+            return new Vector2D(0, 1);
 
         if (this.transform.n12 + (this.height / 2)  >=  Engine.CameraHeight)
-            return true;
+            return new Vector2D(0, -1);
  
-        return false
+        return null;
     }
 
-    CollisionEngine() {
-        if (this.HitWindowBoundingBox())
-            this.velocity = new Vector2D(0, 0);
+    HitOther() {
+        let thisIndex;
 
+        for (let i = 0; i < PhysicsEngine.ColliderList.length; i++) {
+            if (PhysicsEngine.ColliderList[i] === this) {
+                thisIndex = i;
+                break;
+            }
+        }
+    
+        for (let i = 0; i < PhysicsEngine.ColliderList.length; i++) {
+            if (PhysicsEngine.ColliderList[i] === this)
+                continue;
+
+            if (this.CheckAABB(this.td, this.tb, PhysicsEngine.ColliderList[i].td, PhysicsEngine.ColliderList[i].tb)) {
+                PhysicsEngine.CollidedIndexList.unshift(thisIndex);
+                return;
+            }
+        }
+    }
+
+    CheckAABB(Amin, Amax, Bmin, Bmax) {
+        if (Amax.x < Bmin.x || Bmax.x < Amin.x)
+            return false;
+        
+        if (Amax.y < Bmin.y || Bmax.y < Amin.y)
+            return false;
+            
+        return true;
     }
 
     DrawBody(transform) {
@@ -44,16 +69,16 @@ class Rectangle extends Particle {
         Context.lineWidth = 0.1;
         Context.strokeStyle = this.color;
 
-        let a = transform.MultiplyVector(this.a),
-            b = transform.MultiplyVector(this.b),
-            c = transform.MultiplyVector(this.c),
-            d = transform.MultiplyVector(this.d);
+        this.ta = transform.MultiplyVector(this.a),
+        this.tb = transform.MultiplyVector(this.b),
+        this.tc = transform.MultiplyVector(this.c),
+        this.td = transform.MultiplyVector(this.d);
 
-        Context.moveTo(a.x, a.y);
-        Context.lineTo(b.x, b.y);
-        Context.lineTo(c.x, c.y);
-        Context.lineTo(d.x, d.y);
-        Context.lineTo(a.x, a.y);
+        Context.moveTo(this.ta.x, this.ta.y);
+        Context.lineTo(this.tb.x, this.tb.y);
+        Context.lineTo(this.tc.x, this.tc.y);
+        Context.lineTo(this.td.x, this.td.y);
+        Context.lineTo(this.ta.x, this.ta.y);
         Context.stroke();
 
         Context.closePath();

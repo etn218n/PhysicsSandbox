@@ -220,8 +220,6 @@ let PhysicsEngine = {
             this.ColliderList[index].Disable();
         });
 
-        console.log(this.ColliderList.length);
-
         this.CollidedIndexList = [];
 
         this.OnMotionUpdate.forEach(motionUpdater => motionUpdater());
@@ -259,6 +257,13 @@ Array.prototype.remove = function(wantedItem) {
             return;
         }
     }
+}
+
+function Random(a, b) {
+    let min = Math.min.apply(Math, [a, b]),
+        max = Math.max.apply(Math, [a, b]);
+
+    return Math.random() * (max - min) + min;
 }
 
 async function Timer(ms, task) {

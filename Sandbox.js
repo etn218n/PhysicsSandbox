@@ -1,32 +1,15 @@
 Engine.OnAwake.push(() => {
     //Exercise3();
 
-    for (let i = 0; i < 40; i++) {
-        let p = new Particle(Random(-20, 20), Random(-20, 20));
-            p.velocity = new Vector2D(Random(-50, 50), Random(-50, 50));
-            p.velocity = new Vector2D(20, 20);
+    for (let i = 0; i < 20; i++) {
+        let p = new Rectangle(2, 2, Random(-30, 30), Random(-30, 30));
+            p.velocity = new Vector2D(Random(-6, 6), Random(-6, 6));
+            //p.velocity = new Vector2D(20, 20);
     }
 
-    //let rect = new Rectangle();
-
-    // let p1 = new Particle();
-    //     p1.velocity = new Vector2D(5, 0);
-
-    // let p2 = new Particle(10, 0);
-    //     p2.velocity = new Vector2D(-5, 0);
-
-    // let p3 = new Particle(0, 5);
-    //     p3.velocity = new Vector2D(5, 0);
-
-    // let p4 = new Particle(30, 5);
-    //     p4.velocity = new Vector2D(-5, 0);
-
-    // console.log(Particle.prototype.colliderList.length);
+    // let rect1 = new Rectangle(5, 5, 0, 0);
+    //     rect1.velocity = new Vector2D(1, 0);
+        
+    // let rect2 = new Rectangle(5, 5, 15, 0);
+    //     rect2.velocity = new Vector2D(-1, 0);
 });
-
-function Random(a, b) {
-    let min = Math.min.apply(Math, [a, b]),
-        max = Math.max.apply(Math, [a, b]);
-
-    return Math.random() * (max - min) + min;
-}
