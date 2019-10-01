@@ -94,8 +94,9 @@ class Particle {
 
         Context.font = "1px Comic Sans MS";
         Context.textAlign = "center";
+        Context.textBaseline = "middle";
 
-        Context.fillText(this.id, 0, 0.3);
+        Context.fillText(this.id, 0, 0);
         Context.restore(); 
     }
 

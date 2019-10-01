@@ -5,6 +5,8 @@ class Rectangle extends Particle {
         this.width  = width;
         this.height = height;
 
+        this.labelFontSize = (this.width / this.height) * this.width > this.height ? this.width / 2 : this.height / 2;
+
         this.a = new Vector2D(-this.width / 2,  this.height / 2);
         this.b = new Vector2D( this.width / 2,  this.height / 2);
         this.c = new Vector2D( this.width / 2, -this.height / 2);
@@ -61,6 +63,19 @@ class Rectangle extends Particle {
             return false;
             
         return true;
+    }
+
+    DrawLabel(transform) {
+        Context.save();
+        Context.translate(transform.n02, transform.n12);
+        Context.scale(1, -1);
+
+        Context.font = this.labelFontSize + "px Comic Sans MS";
+        Context.textAlign = "center";
+        Context.textBaseline = "middle";
+
+        Context.fillText(this.id, 0, 0);
+        Context.restore(); 
     }
 
     DrawBody(transform) {

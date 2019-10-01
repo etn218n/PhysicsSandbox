@@ -1,7 +1,29 @@
 function Exercise3() {
-    for (let i = 0; i < 10; i++) {
-        //let size = Math.random();
-        let rect = new Rectangle(4, 6);
-            rect.velocity = new Vector2D(Math.random() * 100, Math.random() * 100);
+    for (let i = 0; i < 25; i++) {
+        let squareLength = Random(1, 2);
+        let rect = new Rectangle(squareLength, squareLength);
+            rect.Translate(Random(-25, 25), Random(-25, 25));
+            rect.velocity = new Vector2D(2, 0);
+    }
+
+    for (let i = 0; i < 25; i++) {
+        let squareLength = Random(1, 2);
+        let rect = new Rectangle(squareLength, squareLength);
+            rect.Translate(Random(-25, 25), Random(-25, 25));
+            rect.velocity = new Vector2D(-2, 0);
+    }
+
+    for (let i = 0; i < 25; i++) {
+        let squareLength = Random(1, 2);
+        let rect = new Rectangle(squareLength, squareLength);
+            rect.Translate(Random(-25, 25), Random(-25, 25));
+            rect.velocity = new Vector2D(0, 2);
+    }
+
+    for (let i = 0; i < 25; i++) {
+        let squareLength = Random(1, 2);
+        let rect = new Rectangle(squareLength, squareLength);
+            rect.Translate(Random(-25, 25), Random(-25, 25));
+            rect.velocity = new Vector2D(0, -2);
     }
 }
