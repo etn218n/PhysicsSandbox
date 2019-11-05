@@ -1,8 +1,7 @@
 class Circle extends Particle{
     constructor(r = 0.4, x = 0, y = 0) {
-        super(x, y);
+        super(r, x, y);
 
-        this.radius = r;
         this.axisLength = r + 1;
     }
 
@@ -15,5 +14,9 @@ class Circle extends Particle{
         Context.stroke();
         Context.closePath();
         Context.restore();
+    }
+
+    HitOther() {
+        
     }
 }

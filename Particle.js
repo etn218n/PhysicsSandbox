@@ -6,7 +6,7 @@ class Particle {
         return Particle.prototype.id++;
     }
 
-    constructor(x = 0, y = 0) {
+    constructor(r = 0.4, x = 0, y = 0) {
         this.id = Particle.GetID();
 
         this.transform = new Matrix2D();
@@ -26,7 +26,7 @@ class Particle {
         this.isExtrapolated = true;
 
         this.color = "Gray";
-        this.radius = 0.4;
+        this.radius = r;
 
         this.Renderer  = this.Draw.bind(this);
         this.MotionUpdater = this.OnMotionUpdate.bind(this);
@@ -173,16 +173,16 @@ class Particle {
     }
 
     HitWindowBoundingBox() {
-        if (this.transform.n02 - 0.4 <= -Engine.CameraWidth)
+        if (this.transform.n02 - this.radius <= -Engine.CameraWidth)
             return new Vector2D(1, 0);
 
-        if (this.transform.n02 + 0.4 >= Engine.CameraWidth)
+        if (this.transform.n02 + this.radius >= Engine.CameraWidth)
             return new Vector2D(-1, 0);
 
-        if (this.transform.n12 - 0.4 <= -Engine.CameraHeight)
+        if (this.transform.n12 - this.radius <= -Engine.CameraHeight)
             return new Vector2D(0, 1);
 
-        if(this.transform.n12 + 0.4 >= Engine.CameraHeight)
+        if(this.transform.n12 + this.radius >= Engine.CameraHeight)
             return new Vector2D(0, -1);
  
         return null;
