@@ -69,12 +69,12 @@ class Particle {
             this.extrapolatedTransform.Rotate(deltaAngle * rotationDir);
 
             this.DrawBody(this.extrapolatedTransform);
-            //this.DrawAxes(this.extrapolatedTransform);
+            this.DrawAxes(this.extrapolatedTransform);
             this.DrawLabel(this.extrapolatedTransform);
         }
         else {
             this.DrawBody(this.transform);
-            //this.DrawAxes(this.transform);
+            this.DrawAxes(this.transform);
             this.DrawLabel(this.transform);
         } 
     }
@@ -218,8 +218,9 @@ class Particle {
         }
 
         if (this.angularVelocity != 0) {
-            this.extrapolatedTransform.angle = this.transform.angle;
             this.transform.Rotate(this.angularVelocity * Engine.SecondsPerFixedUpdate);
         } 
+
+        this.extrapolatedTransform.angle = this.transform.angle;
     }
 }

@@ -1,14 +1,14 @@
-let cirA, cirB;
+let cirA, cirB, cirC;
 
 Engine.OnAwake.push(() => {
     Engine.SetPixelsPerUnit(15);
 
-    cirA = new Circle(1, -10, 0);
-    cirA.velocity = new Vector2D(10, 10);
+    cirA = new Circle(2, 0, 10);
+    cirA.velocity = new Vector2D(13, -20);
     cirA.mass = 4;
 
-    cirB = new Circle(1, 10, -10);
-    cirB.velocity = new Vector2D(-10, 20);
+    cirB = new Circle(1, 1, 0);
+    cirB.velocity = new Vector2D(10, 23);
     cirB.mass = 2;
 });
 
@@ -56,29 +56,25 @@ function IdealElasticCollision(a, b) {
 
     // angle between vector from center of A to center of B and the x-axis
     let angle = Math.atan2(vC.y, vC.x) * 180 / Math.PI;
+        console.log(angle);
 
     let rotMatrix = new Matrix2D();
-        rotMatrix.Rotate(angle);
+        rotMatrix.Rotate(-angle);
     let inverserotMatrix = new Matrix2D();
-        inverserotMatrix.Rotate(-angle);
+        inverserotMatrix.Rotate(angle);
 
     let vA = rotMatrix.MultiplyVector(a.velocity);
         vB = rotMatrix.MultiplyVector(b.velocity);
 
-        vA.Print();
-        vB.Print();
-    
     let vAafter = new Vector2D();
         vAafter.x = ((a.mass - b.mass) / (a.mass + b.mass) * vA.x) + ((2 * b.mass) / (a.mass + b.mass) * vB.x);
         vAafter.y = vA.y;
-        vBafter = new Vector2D();
+    let vBafter = new Vector2D();
         vBafter.x = ((b.mass - a.mass) / (a.mass + b.mass) * vB.x) + ((2 * a.mass) / (a.mass + b.mass) * vA.x);
         vBafter.y = vB.y;
 
     let vAfinal = inverserotMatrix.MultiplyVector(vAafter),
         vBfinal = inverserotMatrix.MultiplyVector(vBafter);
-
-    
 
     a.velocity = vAfinal;
     b.velocity = vBfinal;

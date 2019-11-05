@@ -9,7 +9,7 @@ class Matrix2D {
 
         this.angle = 0;
 
-        this.lastRotationDir = "CCW";
+        this.lastRotationDir = undefined;
     }
 
     Up()  { return new Vector2D(this.n01, this.n11); }
@@ -57,7 +57,7 @@ class Matrix2D {
     }
     
     Rotate(degree) {
-        if (degree >= 0) {
+        if (degree > 0) {
             if (this.lastRotationDir === "CW")
                 this.angle = 360 - this.angle;
 
