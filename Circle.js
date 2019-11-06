@@ -15,8 +15,4 @@ class Circle extends Particle{
         Context.closePath();
         Context.restore();
     }
-
-    HitOther() {
-        
-    }
 }

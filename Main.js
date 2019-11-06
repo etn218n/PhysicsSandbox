@@ -210,17 +210,17 @@ let PhysicsEngine = {
     Update: function() {
         this.OnCollisionUpdate.forEach(collisionUpdater => collisionUpdater());
 
-        this.CollidedIndexList.sort(function (a, b) {
-            if (a > b) return -1;
-            if (b > a) return  1;
-            return 0;
-        });
+        // this.CollidedIndexList.sort(function (a, b) {
+        //     if (a > b) return -1;
+        //     if (b > a) return  1;
+        //     return 0;
+        // });
         
-        this.CollidedIndexList.forEach(index => {
-            this.ColliderList[index].Disable();
-        });
+        // this.CollidedIndexList.forEach(index => {
+        //     this.ColliderList[index].Disable();
+        // });
 
-        this.CollidedIndexList = [];
+        // this.CollidedIndexList = [];
 
         this.OnMotionUpdate.forEach(motionUpdater => motionUpdater());
     }

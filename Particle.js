@@ -69,12 +69,12 @@ class Particle {
             this.extrapolatedTransform.Rotate(deltaAngle * rotationDir);
 
             this.DrawBody(this.extrapolatedTransform);
-            this.DrawAxes(this.extrapolatedTransform);
+            //this.DrawAxes(this.extrapolatedTransform);
             this.DrawLabel(this.extrapolatedTransform);
         }
         else {
             this.DrawBody(this.transform);
-            this.DrawAxes(this.transform);
+            //this.DrawAxes(this.transform);
             this.DrawLabel(this.transform);
         } 
     }
@@ -149,27 +149,56 @@ class Particle {
     Rotate(degree) { this.transform.Rotate(degree); }
 
     HitOther() {
-        let thisIndex;
+        for (let i = 0; i < PhysicsEngine.ColliderList.length - 1; i++) 
+        {
+            for (let j = i + 1; j < PhysicsEngine.ColliderList.length; j++)
+             {
+                let cirA = PhysicsEngine.ColliderList[i];
+                    cirB = PhysicsEngine.ColliderList[j];
 
-        for (let i = 0; i < PhysicsEngine.ColliderList.length; i++) {
-            if (PhysicsEngine.ColliderList[i] === this) {
-                thisIndex = i;
-                break;
+                if (this.CircleCollide(cirA, cirB))
+                    this.IdealElasticCollision(cirA, cirB);
             }
         }
+    }
 
-        for (let i = 0; i < PhysicsEngine.ColliderList.length; i++) {
-            if (PhysicsEngine.ColliderList[i] === this)
-                continue;
+    CircleCollide(a, b) {
+        let sumRadiusSquare = Math.pow(a.radius + b.radius, 2),
+            centerDistanceSquare = Math.pow(a.PositionX() - b.PositionX(), 2) + Math.pow(a.PositionY() - b.PositionY(), 2);
+        
+        if (centerDistanceSquare <= sumRadiusSquare)
+            return true;
 
-            let sumRadiusSquare = Math.pow(this.radius + PhysicsEngine.ColliderList[i].radius, 2),
-                centerDistanceSquare = Math.pow(this.PositionX() - PhysicsEngine.ColliderList[i].PositionX(), 2) + Math.pow(this.PositionY() - PhysicsEngine.ColliderList[i].PositionY(), 2);
+        return false;
+    }
+
+    IdealElasticCollision(a, b) {
+        let vC = new Vector2D(b.PositionX() - a.PositionX(), b.PositionY() - a.PositionY());
+            vC.NormalizeSelf();
     
-            if (centerDistanceSquare <= sumRadiusSquare) {
-                PhysicsEngine.CollidedIndexList.unshift(thisIndex);
-                return;
-            }
-        }
+        // angle between vector from center of A to center of B and the x-axis
+        let angle = Math.atan2(vC.y, vC.x) * 180 / Math.PI;
+    
+        let rotMatrix = new Matrix2D();
+            rotMatrix.Rotate(-angle);
+        let inverserotMatrix = new Matrix2D();
+            inverserotMatrix.Rotate(angle);
+    
+        let vA = rotMatrix.MultiplyVector(a.velocity),
+            vB = rotMatrix.MultiplyVector(b.velocity);
+    
+        let vAafter = new Vector2D();
+            vAafter.x = ((a.mass - b.mass) / (a.mass + b.mass) * vA.x) + ((2 * b.mass) / (a.mass + b.mass) * vB.x);
+            vAafter.y = vA.y;
+        let vBafter = new Vector2D();
+            vBafter.x = ((b.mass - a.mass) / (a.mass + b.mass) * vB.x) + ((2 * a.mass) / (a.mass + b.mass) * vA.x);
+            vBafter.y = vB.y;
+    
+        let vAfinal = inverserotMatrix.MultiplyVector(vAafter),
+            vBfinal = inverserotMatrix.MultiplyVector(vBafter);
+    
+        a.velocity = vAfinal;
+        b.velocity = vBfinal;
     }
 
     HitWindowBoundingBox() {

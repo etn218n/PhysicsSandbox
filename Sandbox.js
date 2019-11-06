@@ -1,20 +1,39 @@
-let cirA, cirB, cirC;
+let cirA, cirB, cirC, cirD, cirE;
 
 Engine.OnAwake.push(() => {
     Engine.SetPixelsPerUnit(15);
 
-    cirA = new Circle(2, 0, 10);
-    cirA.velocity = new Vector2D(13, -20);
-    cirA.mass = 4;
+    for (let i = 0; i < 17; i++)
+    {
+        let cir = new Circle(Random(1, 3), Random(-30, 30), Random(-30, 30));
+            cir.velocity = new Vector2D(Random(-30, 30), Random(-30, 30));
+            cir.mass = cir.radius;
+    }
 
-    cirB = new Circle(1, 1, 0);
-    cirB.velocity = new Vector2D(10, 23);
-    cirB.mass = 2;
+    // cirA = new Circle(2, 0, 10);
+    // cirA.velocity = new Vector2D(13, -20);
+    // cirA.mass = 4;
+
+    // cirB = new Circle(1, 1, 0);
+    // cirB.velocity = new Vector2D(10, 23);
+    // cirB.mass = 2;
+
+    // cirC = new Circle(1, 1, -10);
+    // cirC.velocity = new Vector2D(10, 23);
+    // cirC.mass = 2;
+
+    // cirD = new Circle(3, -10, -10);
+    // cirD.velocity = new Vector2D(-10, 23);
+    // cirD.mass = 3;
+
+    // cirE = new Circle(3, -20, -10);
+    // cirE.velocity = new Vector2D(-10, 23);
+    // cirE.mass = 3;
 });
 
 Engine.OnFixedUpdate.push(() => {
-    if (CircleCollide(cirA, cirB))
-        ResolveCollision(1, cirA, cirB);
+    // if (CircleCollide(cirA, cirB))
+    //     ResolveCollision(1, cirA, cirB);
 });
 
 function CircleCollide(a, b) {
