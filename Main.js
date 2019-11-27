@@ -207,20 +207,79 @@ let PhysicsEngine = {
         Engine.OnFixedUpdate.push(this.Update.bind(this));
     },
 
+    CheckCircleCollision: function(a, b) {
+        let sumRadiusSquare = Math.pow(a.radius + b.radius, 2),
+            centerDistanceSquare = Math.pow(a.PositionX() - b.PositionX(), 2) + Math.pow(a.PositionY() - b.PositionY(), 2);
+        
+        if (centerDistanceSquare <= sumRadiusSquare)
+            return true;
+
+        return false;
+    },
+
+    PerfectlyInelasticCollision: function(a, b) {
+        let finalVelocity = new Vector2D();
+    
+        finalVelocity.x = (a.mass * a.velocity.x + b.mass * b.velocity.x) / (a.mass + b.mass);
+        finalVelocity.y = (a.mass * a.velocity.y + b.mass * b.velocity.y) / (a.mass + b.mass);
+    
+        a.velocity = finalVelocity;
+        b.velocity = finalVelocity;
+    },
+
+    IdealElasticCollision: function(a, b) {
+        let vC = new Vector2D(b.PositionX() - a.PositionX(), b.PositionY() - a.PositionY());
+            vC.NormalizeSelf();
+    
+        // angle between vector from center of A to center of B and the x-axis
+        let angle = Math.atan2(vC.y, vC.x) * 180 / Math.PI;
+    
+        let rotMatrix = new Matrix2D();
+            rotMatrix.Rotate(-angle);
+        let inverserotMatrix = new Matrix2D();
+            inverserotMatrix.Rotate(angle);
+    
+        let vA = rotMatrix.MultiplyVector(a.velocity),
+            vB = rotMatrix.MultiplyVector(b.velocity);
+    
+        let vAafter = new Vector2D();
+            vAafter.x = ((a.mass - b.mass) / (a.mass + b.mass) * vA.x) + ((2 * b.mass) / (a.mass + b.mass) * vB.x);
+            vAafter.y = vA.y;
+        let vBafter = new Vector2D();
+            vBafter.x = ((b.mass - a.mass) / (a.mass + b.mass) * vB.x) + ((2 * a.mass) / (a.mass + b.mass) * vA.x);
+            vBafter.y = vB.y;
+    
+        let vAfinal = inverserotMatrix.MultiplyVector(vAafter),
+            vBfinal = inverserotMatrix.MultiplyVector(vBafter);
+    
+        a.velocity = vAfinal;
+        b.velocity = vBfinal;
+    },
+
+    ResolveCollision: function(Cr, a, b) {
+        if (Cr === 1) 
+            this.IdealElasticCollision(a, b);
+        else if (Cr === 0)
+            this.PerfectlyInelasticCollision(a, b);
+        else if (Cr < 1) 
+            this.InelasticCollision(a, b);
+    },
+
     Update: function() {
         this.OnCollisionUpdate.forEach(collisionUpdater => collisionUpdater());
 
-        // this.CollidedIndexList.sort(function (a, b) {
-        //     if (a > b) return -1;
-        //     if (b > a) return  1;
-        //     return 0;
-        // });
-        
-        // this.CollidedIndexList.forEach(index => {
-        //     this.ColliderList[index].Disable();
-        // });
+        for (let i = 0; i < PhysicsEngine.ColliderList.length - 1; i++) 
+        {
+            for (let j = i + 1; j < PhysicsEngine.ColliderList.length; j++)
+             {
+                let cirA = PhysicsEngine.ColliderList[i];
+                    cirB = PhysicsEngine.ColliderList[j];
 
-        // this.CollidedIndexList = [];
+                // only support circle-circle collsion for now
+                if (this.CheckCircleCollision(cirA, cirB))
+                    this.ResolveCollision(1, cirA, cirB);
+            }
+        }
 
         this.OnMotionUpdate.forEach(motionUpdater => motionUpdater());
     }
